@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Deep midnight → rich indigo gradient, angle 160° (top-left heavy) -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:angle="160"
+        android:startColor="#080D1F"
+        android:centerColor="#0D1535"
+        android:endColor="#060B18"
+        android:type="linear" />
+</shape>

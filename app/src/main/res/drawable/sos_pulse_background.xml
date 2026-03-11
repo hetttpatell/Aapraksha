@@ -1,24 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- ========================================== -->
+<!-- AAPRAKSHA - SOS PULSE BUTTON BACKGROUND   -->
+<!-- 3-Layer Glowing Effect with Neon Crimson  -->
+<!-- ========================================== -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Outer Glow -->
+
+    <!-- Layer 1: Outer Glow (10% opacity) -->
     <item>
         <shape android:shape="oval">
-            <size android:width="220dp" android:height="220dp"/>
-            <solid android:color="#33FF0035"/>
+            <solid android:color="@color/neon_crimson_glow_outer" />
+            <size
+                android:width="160dp"
+                android:height="160dp" />
         </shape>
     </item>
-    <!-- Middle Glow -->
-    <item>
+
+    <!-- Layer 2: Middle Glow (30% opacity) -->
+    <item
+        android:bottom="12dp"
+        android:left="12dp"
+        android:right="12dp"
+        android:top="12dp">
         <shape android:shape="oval">
-            <size android:width="180dp" android:height="180dp"/>
-            <solid android:color="#66FF0035"/>
+            <solid android:color="@color/neon_crimson_glow_middle" />
         </shape>
     </item>
-    <!-- Inner Glow -->
-    <item>
+
+    <!-- Layer 3: Inner Glow (50% opacity) -->
+    <item
+        android:bottom="24dp"
+        android:left="24dp"
+        android:right="24dp"
+        android:top="24dp">
         <shape android:shape="oval">
-            <size android:width="140dp" android:height="140dp"/>
-            <solid android:color="#FF0035"/>
+            <solid android:color="@color/neon_crimson_glow_inner" />
         </shape>
     </item>
+
+    <!-- Layer 4: Main SOS Button (Solid) -->
+    <item
+        android:bottom="32dp"
+        android:left="32dp"
+        android:right="32dp"
+        android:top="32dp">
+        <shape android:shape="oval">
+            <solid android:color="@color/neon_crimson" />
+            <!-- Subtle inner shadow effect -->
+            <stroke
+                android:width="2dp"
+                android:color="#33000000" />
+        </shape>
+    </item>
+
+    <!-- Layer 5: Inner Highlight (Glossy effect) -->
+    <item
+        android:bottom="36dp"
+        android:left="36dp"
+        android:right="36dp"
+        android:top="36dp">
+        <shape android:shape="oval">
+            <gradient
+                android:angle="135"
+                android:startColor="#40FFFFFF"
+                android:centerColor="#00FFFFFF"
+                android:endColor="#00FFFFFF"
+                android:type="linear" />
+        </shape>
+    </item>
+
 </layer-list>

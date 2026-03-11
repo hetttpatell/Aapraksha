@@ -1,3 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Aapraksha</string>
+    <!-- App Name -->
+    <string name="app_name">AapRaksha</string>
+    <string name="app_tagline">Your Safety, Our Priority</string>
+    <string name="app_version">v1.0.0</string>
+    <string name="app_logo_description">AapRaksha Logo</string>
+
+    <!-- SOS Button -->
+    <string name="sos_button_text">SOS</string>
+    <string name="sos_button_description">Emergency SOS Button</string>
+    <string name="sos_sending">Sending SOS...</string>
+    <string name="sos_sent">SOS Sent!</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_contacts">Contacts</string>
+    <string name="nav_location">Location</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_title">AapRaksha</string>
+    <string name="dashboard_subtitle">Your Guardian</string>
+    <string name="dashboard_status_safe">You\'re Safe</string>
+    <string name="dashboard_quick_actions">Quick Actions</string>
+
+    <!-- Emergency Contacts -->
+    <string name="contacts_title">Emergency Contacts</string>
+    <string name="contacts_add">Add Contact</string>
+    <string name="contacts_empty">No emergency contacts added</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_profile">Profile</string>
+    <string name="settings_emergency">Emergency Settings</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_about">About</string>
+
+    <!-- Common Actions -->
+    <string name="action_save">Save</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_confirm">Confirm</string>
+
+    <!-- Error Messages -->
+    <string name="error_generic">Something went wrong</string>
+    <string name="error_network">No internet connection</string>
+    <string name="error_location">Unable to get location</string>
 </resources>

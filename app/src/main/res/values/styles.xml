@@ -1,44 +1,233 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Typography -->
-    <style name="Headline1">
+    <!-- ========================================== -->
+    <!-- AAPRAKSHA - COMPONENT STYLES              -->
+    <!-- Ultra-Modern Security Design System       -->
+    <!-- ========================================== -->
+
+    <!-- ==================== -->
+    <!-- TYPOGRAPHY STYLES    -->
+    <!-- ==================== -->
+
+    <!-- Headline1: 34sp, ExtraBold (Dashboard) -->
+    <style name="TextAppearance.Aapraksha.Headline1" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="fontFamily">@font/montserrat</item>
+        <item name="android:fontFamily">@font/montserrat</item>
         <item name="android:textSize">34sp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textColor">@color/indigo_primary</item>
+        <item name="android:textColor">@color/midnight_blue</item>
+        <item name="android:letterSpacing">-0.02</item>
     </style>
-    <style name="Headline2">
+
+    <!-- Headline2: 22sp, SemiBold (Titles) -->
+    <style name="TextAppearance.Aapraksha.Headline2" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="fontFamily">@font/montserrat</item>
+        <item name="android:fontFamily">@font/montserrat</item>
         <item name="android:textSize">22sp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textColor">@color/midnight_blue</item>
+        <item name="android:letterSpacing">-0.01</item>
+    </style>
+
+    <!-- Body1: 16sp, Medium (Instructional text) -->
+    <style name="TextAppearance.Aapraksha.Body1" parent="TextAppearance.Material3.BodyLarge">
+        <item name="fontFamily">@font/montserrat</item>
+        <item name="android:fontFamily">@font/montserrat</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/midnight_blue</item>
     </style>
-    <style name="Body1">
-        <item name="android:textSize">16sp</item>
-        <item name="android:textStyle">medium</item>
-        <item name="android:fontFamily">sans-serif</item>
+
+    <!-- Body2: 14sp (Secondary text) -->
+    <style name="TextAppearance.Aapraksha.Body2" parent="TextAppearance.Material3.BodyMedium">
+        <item name="fontFamily">@font/montserrat</item>
+        <item name="android:fontFamily">@font/montserrat</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/slate_grey</item>
     </style>
-    <style name="SOSLabel">
+
+    <!-- SOS Label: 18sp, Black Weight -->
+    <style name="TextAppearance.Aapraksha.SOS" parent="TextAppearance.Material3.LabelLarge">
+        <item name="fontFamily">@font/montserrat</item>
+        <item name="android:fontFamily">@font/montserrat</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textColor">@color/neon_crimson</item>
+        <item name="android:textColor">@color/text_on_primary</item>
+        <item name="android:letterSpacing">0.1</item>
     </style>
-    <!-- Glassmorphic Card -->
-    <style name="GlassmorphicCard">
-        <item name="android:background">@color/surface_white</item>
-        <item name="android:alpha">0.85</item>
-        <item name="android:elevation">8dp</item>
-        <item name="android:radius">16dp</item>
-        <item name="android:strokeColor">@color/indigo_primary</item>
-        <item name="android:strokeWidth">1dp</item>
+
+    <!-- ==================== -->
+    <!-- BASE BUTTON STYLE    -->
+    <!-- ==================== -->
+
+    <style name="Widget.Aapraksha.Button" parent="Widget.Material3.Button">
+        <item name="cornerRadius">12dp</item>
+        <item name="android:textAllCaps">false</item>
     </style>
-    <!-- TextInput -->
-    <style name="TextInputField">
-        <item name="android:background">@color/background_light</item>
-        <item name="android:fontFamily">sans-serif</item>
+
+    <!-- ==================== -->
+    <!-- SOS BUTTON STYLE     -->
+    <!-- ==================== -->
+
+    <style name="Widget.Aapraksha.Button.SOS" parent="Widget.Aapraksha.Button">
+        <item name="android:layout_width">160dp</item>
+        <item name="android:layout_height">160dp</item>
+        <item name="android:background">@drawable/sos_pulse_background</item>
+        <item name="android:textAppearance">@style/TextAppearance.Aapraksha.SOS</item>
+        <item name="android:textColor">@color/text_on_primary</item>
+        <item name="android:gravity">center</item>
+        <item name="android:elevation">12dp</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <!-- ==================== -->
+    <!-- GLASSMORPHIC CARDS   -->
+    <!-- ==================== -->
+
+    <style name="Widget.Aapraksha.Card.Glassmorphic" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">8dp</item>
+        <item name="cardBackgroundColor">@color/surface_white</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="strokeColor">@color/card_stroke</item>
+        <item name="contentPadding">16dp</item>
+    </style>
+
+    <style name="Widget.Aapraksha.Card.Glassmorphic.Dark">
+        <item name="cardBackgroundColor">@color/surface_dark</item>
+        <item name="strokeColor">@color/card_stroke_dark</item>
+    </style>
+
+    <!-- Feature Card (larger) -->
+    <style name="Widget.Aapraksha.Card.Feature" parent="Widget.Aapraksha.Card.Glassmorphic">
+        <item name="cardCornerRadius">20dp</item>
+        <item name="cardElevation">12dp</item>
+        <item name="contentPadding">20dp</item>
+    </style>
+
+    <!-- ==================== -->
+    <!-- TEXT INPUT FIELDS    -->
+    <!-- ==================== -->
+
+    <!-- Material3 Filled Box Style with Bottom Line Only -->
+    <style name="Widget.Aapraksha.TextInputLayout" parent="Widget.Material3.TextInputLayout.FilledBox">
+        <item name="boxBackgroundColor">@color/input_background</item>
+        <item name="boxStrokeColor">@color/electric_indigo</item>
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">2dp</item>
+        <item name="boxCornerRadiusTopStart">8dp</item>
+        <item name="boxCornerRadiusTopEnd">8dp</item>
+        <item name="boxCornerRadiusBottomStart">0dp</item>
+        <item name="boxCornerRadiusBottomEnd">0dp</item>
+        <item name="hintTextColor">@color/electric_indigo</item>
+        <item name="android:textColorHint">@color/slate_grey</item>
+    </style>
+
+    <style name="Widget.Aapraksha.TextInputEditText" parent="Widget.Material3.TextInputEditText.FilledBox">
         <item name="android:textColor">@color/midnight_blue</item>
-        <item name="android:focusable">true</item>
+        <item name="android:textSize">16sp</item>
+        <item name="fontFamily">@font/montserrat</item>
+        <item name="android:fontFamily">@font/montserrat</item>
     </style>
+
+    <!-- ==================== -->
+    <!-- PRIMARY BUTTONS      -->
+    <!-- ==================== -->
+
+    <style name="Widget.Aapraksha.Button.Primary" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/electric_indigo</item>
+        <item name="android:textColor">@color/text_on_primary</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:paddingStart">24dp</item>
+        <item name="android:paddingEnd">24dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.Aapraksha.Body1</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <!-- ==================== -->
+    <!-- SECONDARY BUTTONS    -->
+    <!-- ==================== -->
+
+    <style name="Widget.Aapraksha.Button.Secondary" parent="Widget.Material3.Button.TonalButton">
+        <item name="backgroundTint">@color/soft_lavender</item>
+        <item name="android:textColor">@color/midnight_blue</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:paddingStart">24dp</item>
+        <item name="android:paddingEnd">24dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.Aapraksha.Body1</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <!-- ==================== -->
+    <!-- OUTLINED BUTTONS     -->
+    <!-- ==================== -->
+
+    <style name="Widget.Aapraksha.Button.Outlined" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="strokeColor">@color/electric_indigo</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="android:textColor">@color/electric_indigo</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.Aapraksha.Body1</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <!-- ==================== -->
+    <!-- EMERGENCY BUTTON     -->
+    <!-- ==================== -->
+
+    <style name="Widget.Aapraksha.Button.Emergency" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/neon_crimson</item>
+        <item name="android:textColor">@color/text_on_primary</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.Aapraksha.Body1</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <!-- ==================== -->
+    <!-- BOTTOM NAVIGATION    -->
+    <!-- ==================== -->
+
+    <style name="Widget.Aapraksha.BottomNavigation" parent="Widget.Material3.BottomNavigationView">
+        <item name="backgroundTint">@color/surface_white</item>
+        <item name="itemIconTint">@color/selector_nav_item</item>
+        <item name="itemTextColor">@color/selector_nav_item</item>
+        <item name="itemActiveIndicatorStyle">@style/Widget.Aapraksha.BottomNavigation.ActiveIndicator</item>
+    </style>
+
+    <style name="Widget.Aapraksha.BottomNavigation.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/md_theme_light_primaryContainer</item>
+    </style>
+
+    <!-- ==================== -->
+    <!-- TOP APP BAR          -->
+    <!-- ==================== -->
+
+    <style name="Widget.Aapraksha.TopAppBar" parent="Widget.Material3.Toolbar">
+        <item name="android:background">@color/surface_white</item>
+        <item name="titleTextColor">@color/midnight_blue</item>
+        <item name="titleTextAppearance">@style/TextAppearance.Aapraksha.Headline2</item>
+    </style>
+
+    <!-- ==================== -->
+    <!-- CHIP STYLES          -->
+    <!-- ==================== -->
+
+    <style name="Widget.Aapraksha.Chip" parent="Widget.Material3.Chip.Suggestion">
+        <item name="chipBackgroundColor">@color/soft_lavender</item>
+        <item name="chipStrokeColor">@color/electric_indigo</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="android:textColor">@color/midnight_blue</item>
+        <item name="chipCornerRadius">20dp</item>
+    </style>
+
+    <style name="Widget.Aapraksha.Chip.Emergency" parent="Widget.Material3.Chip.Suggestion">
+        <item name="chipBackgroundColor">@color/neon_crimson</item>
+        <item name="android:textColor">@color/text_on_primary</item>
+        <item name="chipCornerRadius">20dp</item>
+    </style>
+
 </resources>

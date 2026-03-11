@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ========================================== -->
+<!-- AAPRAKSHA - SOS BUTTON PRESSED STATE      -->
+<!-- Intensified Glow when Pressed             -->
+<!-- ========================================== -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Layer 1: Outer Glow (20% opacity - doubled) -->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#33FF0035" />
+            <size
+                android:width="160dp"
+                android:height="160dp" />
+        </shape>
+    </item>
+
+    <!-- Layer 2: Middle Glow (60% opacity - doubled) -->
+    <item
+        android:bottom="10dp"
+        android:left="10dp"
+        android:right="10dp"
+        android:top="10dp">
+        <shape android:shape="oval">
+            <solid android:color="#99FF0035" />
+        </shape>
+    </item>
+
+    <!-- Layer 3: Inner Glow (100% opacity - intensified) -->
+    <item
+        android:bottom="20dp"
+        android:left="20dp"
+        android:right="20dp"
+        android:top="20dp">
+        <shape android:shape="oval">
+            <solid android:color="#CCFF0035" />
+        </shape>
+    </item>
+
+    <!-- Layer 4: Main SOS Button (Darker when pressed) -->
+    <item
+        android:bottom="30dp"
+        android:left="30dp"
+        android:right="30dp"
+        android:top="30dp">
+        <shape android:shape="oval">
+            <solid android:color="@color/neon_crimson_pressed" />
+            <stroke
+                android:width="2dp"
+                android:color="#66000000" />
+        </shape>
+    </item>
+
+</layer-list>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    AapRaksha – Redefined Splash Screen
+    ─────────────────────────────────────
+    Layers (bottom → top):
+      1. Deep midnight gradient background
+      2. SplashRingView — rings + lighthouse glow (match_parent)
+      3. Logo ImageView — centered on screen
+      4. App name + tagline below logo
+      5. Loading bar + version pinned to bottom
+-->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/splash_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/splash_gradient_background"
+    tools:context=".SplashActivity">
+
+    <!-- ── Ring + Glow (fills screen, draws rings centered) ── -->
+    <com.example.aapraksha.SplashRingView
+        android:id="@+id/ring_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:alpha="0"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- ── Logo (centered at 42% vertical bias, inside rings) ── -->
+    <ImageView
+        android:id="@+id/logo_image"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:src="@drawable/logo"
+        android:scaleType="fitCenter"
+        android:alpha="0"
+        android:contentDescription="@string/app_logo_description"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.42" />
+
+    <!-- ── App Name ── -->
+    <TextView
+        android:id="@+id/app_name_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:alpha="0"
+        android:fontFamily="@font/montserrat"
+        android:letterSpacing="0.12"
+        android:text="@string/app_name"
+        android:textColor="#FFFFFF"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/logo_image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- ── Tagline ── -->
+    <TextView
+        android:id="@+id/tagline_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:alpha="0"
+        android:fontFamily="@font/montserrat"
+        android:letterSpacing="0.06"
+        android:text="@string/app_tagline"
+        android:textColor="#BEE1E6"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/app_name_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- ── Loading bar label ── -->
+    <TextView
+        android:id="@+id/loading_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:alpha="0"
+        android:fontFamily="@font/montserrat"
+        android:letterSpacing="0.15"
+        android:text="INITIALIZING…"
+        android:textColor="#604361EE"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toTopOf="@id/loading_bar"
+        app:layout_constraintStart_toStartOf="@id/loading_bar"
+        app:layout_constraintEnd_toEndOf="@id/loading_bar" />
+
+    <!-- ── Horizontal loading bar ── -->
+    <ProgressBar
+        android:id="@+id/loading_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="220dp"
+        android:layout_height="3dp"
+        android:layout_marginBottom="52dp"
+        android:alpha="0"
+        android:max="1000"
+        android:progress="0"
+        android:progressBackgroundTint="#1A4361EE"
+        android:progressTint="#4361EE"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- ── Version text ── -->
+    <TextView
+        android:id="@+id/version_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:alpha="0"
+        android:fontFamily="@font/montserrat"
+        android:text="@string/app_version"
+        android:textColor="#40BEE1E6"
+        android:textSize="11sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

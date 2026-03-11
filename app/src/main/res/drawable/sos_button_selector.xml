@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ========================================== -->
+<!-- AAPRAKSHA - SOS BUTTON STATE SELECTOR     -->
+<!-- Switches between normal and pressed state -->
+<!-- ========================================== -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/sos_pulse_background_pressed" android:state_pressed="true" />
+    <item android:drawable="@drawable/sos_pulse_background" />
+</selector>
