@@ -114,7 +114,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void goToMain() {
-        startActivity(new Intent(this, MainActivity.class));
+        startActivity(new Intent(this, LoginActivity.class));
         overridePendingTransition(R.anim.main_enter, R.anim.splash_exit);
         finish();
     }

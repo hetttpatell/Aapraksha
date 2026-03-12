@@ -47,4 +47,30 @@
     <string name="error_generic">Something went wrong</string>
     <string name="error_network">No internet connection</string>
     <string name="error_location">Unable to get location</string>
+    
+    <!-- Login Screen -->
+    <string name="login_title">Login</string>
+    <string name="welcome_back">Welcome Back</string>
+    <string name="secure_login">Secure login to AapRaksha</string>
+    <string name="email_or_phone">Email or Phone</string>
+    <string name="password">Password</string>
+    <string name="enter_email_phone">Enter your email or phone</string>
+    <string name="enter_password">Enter your password</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="login">Login</string>
+    <string name="or_continue_with">or continue with</string>
+    <string name="dont_have_account">Don\'t have an account? </string>
+    <string name="sign_up">Sign Up</string>
+    
+    <!-- Signup Screen -->
+    <string name="create_account">Create Account</string>
+    <string name="join_aapraksha">Join AapRaksha</string>
+    <string name="signup_subtitle">Enter your details to get started with your protection journey.</string>
+    <string name="full_name">Full Name</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="email_address">Email Address</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="register">Register</string>
+    <string name="already_have_account">Already have an account? </string>
+    <string name="login_here">Login here</string>
 </resources>
