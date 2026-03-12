@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="20dp"
+    app:cardBackgroundColor="#1A2332"
+    app:cardElevation="8dp"
+    app:cardCornerRadius="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:id="@+id/dialog_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Emergency Contact"
+            android:fontFamily="@font/montserrat_bold"
+            android:textColor="@color/text_on_dark"
+            android:textSize="20sp"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Name Field -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name *"
+            android:fontFamily="@font/montserrat_semibold"
+            android:textColor="@color/text_on_dark"
+            android:textSize="13sp"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/edit_contact_name"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/edit_text_bg"
+            android:paddingHorizontal="16dp"
+            android:hint="Enter name"
+            android:textColor="@color/text_on_dark"
+            android:textColorHint="@color/slate_grey"
+            android:fontFamily="@font/montserrat_regular"
+            android:textSize="14sp"
+            android:layout_marginBottom="16dp"
+            android:inputType="textPersonName" />
+
+        <!-- Phone Field -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Phone Number *"
+            android:fontFamily="@font/montserrat_semibold"
+            android:textColor="@color/text_on_dark"
+            android:textSize="13sp"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/edit_contact_phone"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/edit_text_bg"
+            android:paddingHorizontal="16dp"
+            android:hint="Enter phone number"
+            android:textColor="@color/text_on_dark"
+            android:textColorHint="@color/slate_grey"
+            android:fontFamily="@font/montserrat_regular"
+            android:textSize="14sp"
+            android:layout_marginBottom="16dp"
+            android:inputType="phone" />
+
+        <!-- Relation Field -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Relation"
+            android:fontFamily="@font/montserrat_semibold"
+            android:textColor="@color/text_on_dark"
+            android:textSize="13sp"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/edit_contact_relation"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/edit_text_bg"
+            android:paddingHorizontal="16dp"
+            android:hint="e.g., Family, Friend, Colleague"
+            android:textColor="@color/text_on_dark"
+            android:textColorHint="@color/slate_grey"
+            android:fontFamily="@font/montserrat_regular"
+            android:textSize="14sp"
+            android:layout_marginBottom="24dp"
+            android:inputType="text" />
+
+        <!-- Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end">
+
+            <Button
+                android:id="@+id/btn_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:text="Cancel"
+                android:fontFamily="@font/montserrat_semibold"
+                android:textColor="@color/slate_grey"
+                android:textSize="14sp"
+                android:textAllCaps="false"
+                android:background="?attr/selectableItemBackground"
+                android:paddingHorizontal="20dp"
+                android:layout_marginEnd="12dp" />
+
+            <Button
+                android:id="@+id/btn_save_contact"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:text="Save"
+                android:fontFamily="@font/montserrat_bold"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:textAllCaps="false"
+                android:background="@drawable/button_bg"
+                android:paddingHorizontal="32dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

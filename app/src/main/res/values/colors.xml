@@ -29,6 +29,9 @@
     <color name="neon_crimson_glow_middle">#4DFF0035</color>
     <color name="neon_crimson_glow_inner">#80FF0035</color>
     <color name="neon_crimson_pressed">#CC0029</color>
+    
+    <!-- SOS Button Color -->
+    <color name="sos_red">#FF1744</color>
 
     <!-- Text Colors -->
     <color name="midnight_blue">#1E293B</color>

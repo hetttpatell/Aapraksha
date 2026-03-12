@@ -40,6 +40,16 @@
             android:name=".MainActivity"
             android:exported="false" />
 
+        <!-- Dashboard Activity -->
+        <activity
+            android:name=".DashboardActivity"
+            android:exported="false" />
+
+        <!-- Emergency Contacts Activity -->
+        <activity
+            android:name=".EmergencyContactsActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>
