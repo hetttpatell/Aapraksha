@@ -50,6 +50,27 @@
             android:name=".EmergencyContactsActivity"
             android:exported="false" />
 
+        <!-- Settings Activity -->
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false" />
+
+        <!-- Permissions Activity -->
+        <activity
+            android:name=".PermissionsActivity"
+            android:exported="false" />
+
+        <!-- Edit Profile Activity -->
+        <activity
+            android:name=".EditProfileActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- SOS Triggered Activity -->
+        <activity
+            android:name=".SosTriggeredActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>
