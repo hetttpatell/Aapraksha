@@ -27,23 +27,18 @@ import android.view.View;
 public class SplashRingView extends View {
 
     // ── Paints ──────────────────────────────────────────────────────────────
-    private final Paint thinRingInner  = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Paint thinRingOuter  = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Paint thickArcInner  = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Paint thickArcOuter  = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint ringPaint      = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint dashedRingPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint sweepPaint     = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint glowPaint      = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Paint haloRingInner  = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Paint haloRingOuter  = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     // ── Geometry ─────────────────────────────────────────────────────────────
-    private final RectF innerRect = new RectF();
-    private final RectF outerRect = new RectF();
     private float cx, cy;
-    private float innerRadius, outerRadius;
-
+    private float maxRadius;
+    
     // ── Animation values ──────────────────────────────────────────────────────
-    private float arcAngle     = 0f;   // drives rotation
-    private float glowIntensity = 0f;  // 0.0 → 1.0
+    private float radarAngle = 0f;     // 0 -> 360 rotation
+    private float glowIntensity = 0f;  // 0.0 -> 1.0
 
     // ── Constructor ───────────────────────────────────────────────────────────
     public SplashRingView(Context context) {
@@ -59,126 +54,103 @@ public class SplashRingView extends View {
     private void init() {
         final float dp = getResources().getDisplayMetrics().density;
 
-        // inner thin ring — soft lavender, 30% opaque, 1.5dp
-        thinRingInner.setStyle(Paint.Style.STROKE);
-        thinRingInner.setColor(0x4DBEE1E6);
-        thinRingInner.setStrokeWidth(1.5f * dp);
+        // Standard Rings — Rose pink, low opacity
+        ringPaint.setStyle(Paint.Style.STROKE);
+        ringPaint.setColor(0xFFF48FB1); // Rose pink
+        ringPaint.setStrokeWidth(1f * dp);
+        ringPaint.setAlpha(55);
 
-        // outer thin ring — lighter lavender, 20% opaque, 1dp
-        thinRingOuter.setStyle(Paint.Style.STROKE);
-        thinRingOuter.setColor(0x338BE0E6);
-        thinRingOuter.setStrokeWidth(1f * dp);
+        // Dashed Ring — Slightly brighter, "shield circuit" feel
+        dashedRingPaint.setStyle(Paint.Style.STROKE);
+        dashedRingPaint.setColor(0xFFF48FB1);
+        dashedRingPaint.setStrokeWidth(1.5f * dp);
+        dashedRingPaint.setAlpha(100);
+        dashedRingPaint.setPathEffect(new android.graphics.DashPathEffect(new float[]{10f * dp, 8f * dp}, 0));
 
-        // inner halo (extra subtle glow ring at 0.5dp)
-        haloRingInner.setStyle(Paint.Style.STROKE);
-        haloRingInner.setColor(0x1A4361EE);
-        haloRingInner.setStrokeWidth(0.5f * dp);
+        // Radar Sweep — Crimson/Magenta gradient (set in onSizeChanged)
+        sweepPaint.setStyle(Paint.Style.FILL);
 
-        // outer halo
-        haloRingOuter.setStyle(Paint.Style.STROKE);
-        haloRingOuter.setColor(0x124361EE);
-        haloRingOuter.setStrokeWidth(0.5f * dp);
-
-        // thick arc inner — 5dp, gradient set per-draw
-        thickArcInner.setStyle(Paint.Style.STROKE);
-        thickArcInner.setStrokeWidth(5f * dp);
-        thickArcInner.setStrokeCap(Paint.Cap.ROUND);
-
-        // thick arc outer — 3dp, gradient set per-draw
-        thickArcOuter.setStyle(Paint.Style.STROKE);
-        thickArcOuter.setStrokeWidth(3f * dp);
-        thickArcOuter.setStrokeCap(Paint.Cap.ROUND);
-
-        setLayerType(LAYER_TYPE_SOFTWARE, null); // needed for RadialGradient
+        setLayerType(LAYER_TYPE_SOFTWARE, null);
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        final float dp = getResources().getDisplayMetrics().density;
         cx = w / 2f;
         cy = h / 2f;
-        innerRadius = 115f * dp;
-        outerRadius = 152f * dp;
+        maxRadius = Math.min(w, h) * 0.55f;
 
-        innerRect.set(cx - innerRadius, cy - innerRadius, cx + innerRadius, cy + innerRadius);
-        outerRect.set(cx - outerRadius, cy - outerRadius, cx + outerRadius, cy + outerRadius);
+        // Radar sweep gradient: Transparent → Crimson/Magenta
+        SweepGradient sweepGradient = new SweepGradient(cx, cy,
+                new int[]{0x00C2185B, 0x00C2185B, 0xBBC2185B}, // tail transparent → head crimson-magenta
+                new float[]{0f, 0.75f, 1f});
+        sweepPaint.setShader(sweepGradient);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        // Step 1 — lighthouse glow
-        if (glowIntensity > 0f) {
-            drawLighthouseGlow(canvas);
+        // 1. Draw Concentric Rings (Static)
+        // Fixed proportions of maxRadius
+        float[] ringRatios = {0.35f, 0.50f, 0.65f, 0.85f, 1.0f};
+        
+        for (int i = 0; i < ringRatios.length; i++) {
+            float r = maxRadius * ringRatios[i];
+            
+            // Make the 3rd ring dashed for "tech" feel
+            if (i == 2) { 
+                canvas.drawCircle(cx, cy, r, dashedRingPaint);
+            } else {
+                canvas.drawCircle(cx, cy, r, ringPaint);
+            }
         }
 
-        // Step 2 — thin static rings
-        canvas.drawOval(innerRect, thinRingInner);
-        canvas.drawOval(outerRect, thinRingOuter);
-
-        // Step 3 — clockwise rotating 90° arc on inner ring
-        SweepGradient sgInner = new SweepGradient(cx, cy,
-                new int[]{0x004361EE, 0xCC4361EE, 0xFFBEE1E6, 0xCC4361EE, 0x004361EE},
-                new float[]{0f, 0.05f, 0.14f, 0.22f, 0.25f});
-        thickArcInner.setShader(sgInner);
+        // 2. Draw Radar Sweep
         canvas.save();
-        canvas.rotate(arcAngle, cx, cy);
-        canvas.drawArc(innerRect, -90f, 90f, false, thickArcInner);
+        canvas.rotate(radarAngle, cx, cy);
+        canvas.drawCircle(cx, cy, maxRadius * 0.95f, sweepPaint); // Slightly smaller than largest ring
         canvas.restore();
-
-        // Step 4 — counter-clockwise 90° arc on outer ring
-        SweepGradient sgOuter = new SweepGradient(cx, cy,
-                new int[]{0x00BEE1E6, 0x99BEE1E6, 0xFFBEE1E6, 0x99BEE1E6, 0x00BEE1E6},
-                new float[]{0f, 0.04f, 0.12f, 0.20f, 0.25f});
-        thickArcOuter.setShader(sgOuter);
-        canvas.save();
-        canvas.rotate(-arcAngle * 0.65f + 45f, cx, cy);
-        canvas.drawArc(outerRect, -90f, 90f, false, thickArcOuter);
-        canvas.restore();
+        
+        // 3. Center Glow (Lighthouse effect)
+        if (glowIntensity > 0f) {
+            drawCenterGlow(canvas);
+        }
     }
 
-    /** Lighthouse-style multi-layer radial glow emanating from the logo center. */
-    private void drawLighthouseGlow(Canvas canvas) {
-        float intensity = glowIntensity;
-
-        // Layer 1: broad soft indigo halo
-        float r1 = outerRadius * 1.8f;
-        RadialGradient g1 = new RadialGradient(cx, cy, r1,
+    private void drawCenterGlow(Canvas canvas) {
+        float r = maxRadius * 0.4f;
+        // Layer 1: Broad rose/crimson halo
+        RadialGradient halo = new RadialGradient(cx, cy, maxRadius * 1.1f,
                 new int[]{
-                        Color.argb((int)(55 * intensity), 67, 97, 238),
-                        Color.argb((int)(25 * intensity), 67, 97, 238),
-                        Color.argb((int)(8  * intensity), 67, 97, 238),
-                        Color.argb(0, 15, 23, 42)
-                },
-                new float[]{0f, 0.35f, 0.65f, 1f},
-                Shader.TileMode.CLAMP);
-        glowPaint.setShader(g1);
-        canvas.drawCircle(cx, cy, r1, glowPaint);
-
-        // Layer 2: tight bright core glow (white-lavender)
-        float r2 = innerRadius * 0.85f;
-        RadialGradient g2 = new RadialGradient(cx, cy, r2,
-                new int[]{
-                        Color.argb((int)(80 * intensity), 255, 255, 255),
-                        Color.argb((int)(45 * intensity), 190, 225, 230),
-                        Color.argb(0, 67, 97, 238)
+                    Color.argb((int)(35 * glowIntensity), 194, 24, 91),   // crimson-magenta
+                    Color.argb((int)(15 * glowIntensity), 194, 24, 91),
+                    Color.TRANSPARENT
                 },
                 new float[]{0f, 0.5f, 1f},
                 Shader.TileMode.CLAMP);
-        glowPaint.setShader(g2);
-        canvas.drawCircle(cx, cy, r2, glowPaint);
+        glowPaint.setShader(halo);
+        canvas.drawCircle(cx, cy, maxRadius * 1.1f, glowPaint);
+
+        // Layer 2: Tight bright core (soft rose-white)
+        RadialGradient core = new RadialGradient(cx, cy, r,
+                new int[]{
+                    Color.argb((int)(120 * glowIntensity), 255, 200, 220), // warm pink-white
+                    Color.argb((int)(50  * glowIntensity), 194, 24, 91),   // mid crimson
+                    Color.TRANSPARENT
+                },
+                new float[]{0f, 0.5f, 1f},
+                Shader.TileMode.CLAMP);
+        glowPaint.setShader(core);
+        canvas.drawCircle(cx, cy, r, glowPaint);
     }
 
-    // ── Animated properties ───────────────────────────────────────────────────
-    public void setArcAngle(float angle) {
-        arcAngle = angle;
+    // ── Animation Setters ───────────────────────────────────────────────────
+    public void setRadarAngle(float angle) {
+        radarAngle = angle;
         invalidate();
     }
-    public float getArcAngle() { return arcAngle; }
-
+    
     public void setGlowIntensity(float intensity) {
         glowIntensity = intensity;
         invalidate();
     }
-    public float getGlowIntensity() { return glowIntensity; }
 }

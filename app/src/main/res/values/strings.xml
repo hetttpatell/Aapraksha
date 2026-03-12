@@ -2,8 +2,8 @@
 <resources>
     <!-- App Name -->
     <string name="app_name">AapRaksha</string>
-    <string name="app_tagline">Your Safety, Our Priority</string>
-    <string name="app_version">v1.0.0</string>
+    <string name="app_tagline"></string>
+    <string name="app_version">v1.0</string>
     <string name="app_logo_description">AapRaksha Logo</string>
 
     <!-- SOS Button -->
