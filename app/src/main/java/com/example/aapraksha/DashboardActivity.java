@@ -214,12 +214,14 @@ public class DashboardActivity extends AppCompatActivity {
         }
         if (navSafeZones != null) {
             navSafeZones.setOnClickListener(v -> {
-                Toast.makeText(this, "Safe Zones", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(DashboardActivity.this, NetworkAlertsActivity.class);
+                startActivity(intent);
             });
         }
         if (navHistory != null) {
             navHistory.setOnClickListener(v -> {
-                Toast.makeText(this, "History", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(DashboardActivity.this, HistoryActivity.class);
+                startActivity(intent);
             });
         }
         if (navSettings != null) {

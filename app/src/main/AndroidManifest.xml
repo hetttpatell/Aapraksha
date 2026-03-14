@@ -71,6 +71,32 @@
             android:name=".SosTriggeredActivity"
             android:exported="false" />
 
+        <!-- History Activity -->
+        <activity
+            android:name=".HistoryActivity"
+            android:exported="false" />
+
+
+        <!-- Alert Detail Activity -->
+        <activity
+            android:name=".AlertDetailActivity"
+            android:exported="false" />
+
+        <!-- Safe Screen Activity -->
+        <activity
+            android:name=".SafeScreenActivity"
+            android:exported="false" />
+
+        <!-- Network Alerts Activity -->
+        <activity
+            android:name=".NetworkAlertsActivity"
+            android:exported="false" />
+
+        <!-- Alert Detail Activity -->
+        <activity
+            android:name=".AlertDetailActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

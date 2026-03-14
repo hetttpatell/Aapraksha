@@ -94,8 +94,20 @@
             android:textColorHint="@color/slate_grey"
             android:fontFamily="@font/montserrat_regular"
             android:textSize="14sp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="16dp"
             android:inputType="text" />
+
+        <!-- Priority Contact Checkbox -->
+        <CheckBox
+            android:id="@+id/checkbox_priority"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Set as Priority Contact"
+            android:fontFamily="@font/montserrat"
+            android:textColor="@color/text_on_dark"
+            android:textSize="13sp"
+            android:layout_marginBottom="24dp"
+            android:buttonTint="@color/electric_indigo_light" />
 
         <!-- Buttons -->
         <LinearLayout

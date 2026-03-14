@@ -159,8 +159,8 @@ public class SosTriggeredActivity extends AppCompatActivity {
             
             Toast.makeText(this, "SOS Alert Cancelled", Toast.LENGTH_SHORT).show();
             
-            // Return to dashboard
-            Intent intent = new Intent(SosTriggeredActivity.this, DashboardActivity.class);
+            // Navigate to Safe Screen instead of dashboard
+            Intent intent = new Intent(SosTriggeredActivity.this, SafeScreenActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
@@ -184,13 +184,15 @@ public class SosTriggeredActivity extends AppCompatActivity {
         
         if (navSafeZones != null) {
             navSafeZones.setOnClickListener(v -> {
-                Toast.makeText(this, "Safe Zones", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(SosTriggeredActivity.this, NetworkAlertsActivity.class);
+                startActivity(intent);
             });
         }
         
         if (navHistory != null) {
             navHistory.setOnClickListener(v -> {
-                Toast.makeText(this, "History", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(SosTriggeredActivity.this, HistoryActivity.class);
+                startActivity(intent);
             });
         }
         

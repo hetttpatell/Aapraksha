@@ -18,6 +18,7 @@
     <!-- Background Colors -->
     <color name="clean_slate">#F1F2F6</color>
     <color name="deep_midnight">#0F172A</color>
+    <color name="background_dark">#0F172A</color>
 
     <!-- Surface Colors -->
     <color name="surface_white">#FFFFFF</color>

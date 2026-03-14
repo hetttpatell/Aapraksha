@@ -65,6 +65,47 @@
             android:orientation="vertical"
             android:padding="20dp">
 
+            <!-- Priority Contact Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PRIORITY CONTACT"
+                android:fontFamily="@font/montserrat_bold"
+                android:textColor="@color/electric_indigo_light"
+                android:textSize="12sp"
+                android:letterSpacing="0.1"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Your primary emergency contact shown on safe screen"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/slate_grey"
+                android:textSize="11sp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Priority Contact Container -->
+            <LinearLayout
+                android:id="@+id/priority_contact_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="32dp">
+                <!-- Priority contact will be added dynamically -->
+            </LinearLayout>
+
+            <!-- Regular Contacts Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="EMERGENCY CONTACTS"
+                android:fontFamily="@font/montserrat_bold"
+                android:textColor="@color/text_on_dark"
+                android:textSize="12sp"
+                android:letterSpacing="0.1"
+                android:layout_marginBottom="12dp" />
+
             <!-- Contacts List -->
             <LinearLayout
                 android:id="@+id/contacts_container"

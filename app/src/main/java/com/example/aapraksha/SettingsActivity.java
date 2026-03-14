@@ -79,7 +79,7 @@ public class SettingsActivity extends AppCompatActivity {
         
         if (navSafeZones != null) {
             navSafeZones.setOnClickListener(v -> {
-                Toast.makeText(this, "Safe Zones", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Alerts", Toast.LENGTH_SHORT).show();
             });
         }
         

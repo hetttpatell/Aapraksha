@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background_dark"
+    android:padding="16dp">
+
+    <!-- Header -->
+    <TextView
+        android:id="@+id/alert_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rajesh Kumar"
+        android:textColor="@color/text_on_dark"
+        android:textSize="18sp"
+        android:fontFamily="@font/montserrat_bold"
+        android:layout_marginBottom="4dp" />
+
+    <!-- Time -->
+    <TextView
+        android:id="@+id/alert_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2m ago"
+        android:textColor="@color/slate_grey"
+        android:textSize="12sp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Map Placeholder -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:background="@color/input_background_dark"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Action Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <Button
+            android:id="@+id/btn_respond_now"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Respond Now"
+            android:backgroundTint="@color/sos_red"
+            android:textColor="@color/text_on_primary"
+            android:fontFamily="@font/montserrat_bold"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/btn_view_location"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="View Location"
+            android:backgroundTint="@color/electric_indigo"
+            android:textColor="@color/text_on_primary"
+            android:fontFamily="@font/montserrat_bold" />
+    </LinearLayout>
+
+    <!-- Case Resolved Button (optional, hidden by default) -->
+    <Button
+        android:id="@+id/btn_case_resolved"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Case Resolved"
+        android:backgroundTint="@color/input_background_dark"
+        android:textColor="@color/text_on_dark"
+        android:fontFamily="@font/montserrat_bold"
+        android:layout_marginTop="16dp"
+        android:visibility="gone" />
+
+</LinearLayout>
