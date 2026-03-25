@@ -19,6 +19,8 @@ import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class SplashActivity extends AppCompatActivity {
 
     private static final int SPLASH_DURATION = 3000;
@@ -28,6 +30,7 @@ public class SplashActivity extends AppCompatActivity {
     private TextView    taglineText;
     private ProgressBar loadingBar;
     private TextView    versionText;
+    private FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         hideSystemBars();
         bindViews();
+        auth = FirebaseAuth.getInstance();
         startSplash();
     }
 
@@ -114,7 +118,14 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void goToMain() {
-        startActivity(new Intent(this, DashboardActivity.class));
+        // Check if user is logged in
+        if (auth.getCurrentUser() != null) {
+            // User is logged in, go to Dashboard
+            startActivity(new Intent(this, DashboardActivity.class));
+        } else {
+            // User is not logged in, go to Login
+            startActivity(new Intent(this, LoginActivity.class));
+        }
         overridePendingTransition(R.anim.main_enter, R.anim.splash_exit);
         finish();
     }

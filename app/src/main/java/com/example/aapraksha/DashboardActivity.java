@@ -3,6 +3,7 @@ package com.example.aapraksha;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,107 +11,74 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class DashboardActivity extends AppCompatActivity {
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.aapraksha.models.User;
 
+public class DashboardActivity extends AppCompatActivity {
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private Handler sosHandler;
+    private Runnable sosNavigationRunnable;
     private boolean isSosActive = false;
+    private String currentAlertId;
     private android.animation.AnimatorSet continuousPulseAnimator;
     private View statusDot;
     private TextView tvSosStatus;
-    private Handler sosHandler;
-    private Runnable sosNavigationRunnable;
-
+    private TextView tvUserName;
+    private FirebaseAuth auth;
+    private UserRepository userRepository;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_dashboard);
         
-        try {
-            setContentView(R.layout.activity_dashboard);
-            
-            // Initialize views
-            View sosButton = findViewById(R.id.btn_sos);
-            View sosPulse1 = findViewById(R.id.sos_pulse_1);
-            View sosPulse2 = findViewById(R.id.sos_pulse_2);
-            View sosPulse3 = findViewById(R.id.sos_pulse_3);
-            statusDot = findViewById(R.id.status_dot);
-            tvSosStatus = findViewById(R.id.tv_sos_status);
-            
-            // Setup SOS button click with toggle
-            if (sosButton != null) {
-                sosButton.setOnClickListener(v -> {
-                    toggleSOS(sosPulse1, sosPulse2, sosPulse3);
-                });
+        statusDot = findViewById(R.id.status_dot);
+        tvSosStatus = findViewById(R.id.tv_sos_status);
+        tvUserName = findViewById(R.id.username_text);
+        
+        auth = FirebaseAuth.getInstance();
+        userRepository = new UserRepository();
+        
+        setupBottomNav();
+        loadUserProfile();
+    }
+    private void loadUserProfile() {
+        String userId = auth.getCurrentUser().getUid();
+        userRepository.getUserProfile(userId, new UserRepository.OnUserFetchListener() {
+            @Override
+            public void onSuccess(User user) {
+                if (tvUserName != null && user != null && user.getFullName() != null) {
+                    tvUserName.setText("Welcome, " + user.getFullName());
+                } else if (tvUserName != null) {
+                    tvUserName.setText("Welcome");
+                }
             }
-            
-            // Setup feature cards
-            View cardEmergency = findViewById(R.id.card_emergency_contacts);
-            View cardGps = findViewById(R.id.card_gps);
-            View cardVoice = findViewById(R.id.card_voice_trigger);
-            
-            if (cardEmergency != null) {
-                cardEmergency.setOnClickListener(v -> {
-                    Intent intent = new Intent(DashboardActivity.this, EmergencyContactsActivity.class);
-                    startActivity(intent);
-                });
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.e("DashboardActivity", "Failed to load user profile: " + errorMessage);
+                if (tvUserName != null) {
+                    tvUserName.setText("Welcome");
+                }
             }
-            
-            if (cardGps != null) {
-                cardGps.setOnClickListener(v -> 
-                    Toast.makeText(this, "GPS Tracking", Toast.LENGTH_SHORT).show());
-            }
-            
-            if (cardVoice != null) {
-                cardVoice.setOnClickListener(v -> 
-                    Toast.makeText(this, "Voice Trigger", Toast.LENGTH_SHORT).show());
-            }
-            
-            // Setup bottom navigation
-            setupBottomNav();
-            
-            // Setup profile button click
-            ImageView btnProfile = findViewById(R.id.btn_profile);
-            if (btnProfile != null) {
-                btnProfile.setOnClickListener(v -> {
-                    Intent intent = new Intent(DashboardActivity.this, EditProfileActivity.class);
-                    startActivity(intent);
-                });
-            }
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Error loading dashboard: " + e.getMessage(), Toast.LENGTH_LONG).show();
-        }
+        });
     }
     
-    private void toggleSOS(View pulse1, View pulse2, View pulse3) {
-        isSosActive = !isSosActive;
+    private void deactivateSOS(View pulse1, View pulse2, View pulse3) {
+        updateStatusIndicator(false);
+        stopContinuousPulse(pulse1, pulse2, pulse3);
         
-        if (isSosActive) {
-            // Activate SOS - Start continuous animation
-            Toast.makeText(this, "🚨 SOS ACTIVATED! 🚨", Toast.LENGTH_LONG).show();
-            updateStatusIndicator(true);
-            startContinuousPulse(pulse1, pulse2, pulse3);
-            
-            // Navigate to SOS Triggered screen after 4 seconds
-            sosHandler = new Handler();
-            sosNavigationRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    Intent intent = new Intent(DashboardActivity.this, SosTriggeredActivity.class);
-                    startActivity(intent);
-                }
-            };
-            sosHandler.postDelayed(sosNavigationRunnable, 4000);
-            
-        } else {
-            // Deactivate SOS - Stop animation
-            Toast.makeText(this, "SOS Deactivated", Toast.LENGTH_SHORT).show();
-            updateStatusIndicator(false);
-            stopContinuousPulse(pulse1, pulse2, pulse3);
-            
-            // Cancel navigation if SOS is deactivated before 4 seconds
-            if (sosHandler != null && sosNavigationRunnable != null) {
-                sosHandler.removeCallbacks(sosNavigationRunnable);
-            }
+        // Cancel navigation if SOS is deactivated before screen navigation
+        if (sosHandler != null && sosNavigationRunnable != null) {
+            sosHandler.removeCallbacks(sosNavigationRunnable);
+        }
+        
+        // Stop location tracking service
+        if (currentAlertId != null) {
+            Intent serviceIntent = new Intent(this, LocationTrackingService.class);
+            stopService(serviceIntent);
         }
     }
     
@@ -147,27 +115,16 @@ public class DashboardActivity extends AppCompatActivity {
         android.animation.ObjectAnimator scaleX = android.animation.ObjectAnimator.ofFloat(view, "scaleX", 1f, 2.4f);
         android.animation.ObjectAnimator scaleY = android.animation.ObjectAnimator.ofFloat(view, "scaleY", 1f, 2.4f);
         android.animation.ObjectAnimator alpha = android.animation.ObjectAnimator.ofFloat(view, "alpha", 0.8f, 0f);
-        
-        scaleX.setDuration(1800);
-        scaleY.setDuration(1800);
-        alpha.setDuration(1800);
-        
-        scaleX.setRepeatCount(android.animation.ValueAnimator.INFINITE);
-        scaleY.setRepeatCount(android.animation.ValueAnimator.INFINITE);
-        alpha.setRepeatCount(android.animation.ValueAnimator.INFINITE);
-        
-        scaleX.setRepeatMode(android.animation.ValueAnimator.RESTART);
-        scaleY.setRepeatMode(android.animation.ValueAnimator.RESTART);
-        alpha.setRepeatMode(android.animation.ValueAnimator.RESTART);
-        
+        scaleX.setDuration(1200);
+        scaleY.setDuration(1200);
+        alpha.setDuration(1200);
         scaleX.setStartDelay(delay);
         scaleY.setStartDelay(delay);
         alpha.setStartDelay(delay);
-        
+
         android.animation.AnimatorSet set = new android.animation.AnimatorSet();
         set.playTogether(scaleX, scaleY, alpha);
-        set.setInterpolator(new android.view.animation.DecelerateInterpolator(2.0f));
-        
+        set.setInterpolator(new android.view.animation.LinearInterpolator());
         return set;
     }
     
@@ -178,17 +135,17 @@ public class DashboardActivity extends AppCompatActivity {
         }
         
         if (pulse1 != null) {
-            pulse1.setVisibility(View.INVISIBLE);
+            pulse1.setVisibility(View.GONE);
             pulse1.setScaleX(1f);
             pulse1.setScaleY(1f);
         }
         if (pulse2 != null) {
-            pulse2.setVisibility(View.INVISIBLE);
+            pulse2.setVisibility(View.GONE);
             pulse2.setScaleX(1f);
             pulse2.setScaleY(1f);
         }
         if (pulse3 != null) {
-            pulse3.setVisibility(View.INVISIBLE);
+            pulse3.setVisibility(View.GONE);
             pulse3.setScaleX(1f);
             pulse3.setScaleY(1f);
         }
@@ -208,7 +165,6 @@ public class DashboardActivity extends AppCompatActivity {
         
         if (navHome != null) {
             navHome.setOnClickListener(v -> {
-                // Already on home
                 Toast.makeText(this, "Home", Toast.LENGTH_SHORT).show();
             });
         }
@@ -235,23 +191,27 @@ public class DashboardActivity extends AppCompatActivity {
     private void highlightNavItem(View navItem, boolean isActive) {
         if (navItem == null) return;
         
-        ImageView icon = (ImageView) ((android.view.ViewGroup) navItem).getChildAt(0);
-        TextView label = (TextView) ((android.view.ViewGroup) navItem).getChildAt(1);
-        
-        if (isActive) {
-            navItem.setAlpha(1f);
-            if (icon != null) icon.setColorFilter(getColor(R.color.electric_indigo_light));
-            if (label != null) {
-                label.setTextColor(getColor(R.color.electric_indigo_light));
-                label.setTypeface(null, android.graphics.Typeface.BOLD);
+        try {
+            ImageView icon = (ImageView) ((android.view.ViewGroup) navItem).getChildAt(0);
+            TextView label = (TextView) ((android.view.ViewGroup) navItem).getChildAt(1);
+            
+            if (isActive) {
+                navItem.setAlpha(1f);
+                if (icon != null) icon.setColorFilter(getColor(R.color.electric_indigo_light));
+                if (label != null) {
+                    label.setTextColor(getColor(R.color.electric_indigo_light));
+                    label.setTypeface(null, android.graphics.Typeface.BOLD);
+                }
+            } else {
+                navItem.setAlpha(0.5f);
+                if (icon != null) icon.setColorFilter(getColor(R.color.slate_grey));
+                if (label != null) {
+                    label.setTextColor(getColor(R.color.slate_grey));
+                    label.setTypeface(null, android.graphics.Typeface.NORMAL);
+                }
             }
-        } else {
-            navItem.setAlpha(0.5f);
-            if (icon != null) icon.setColorFilter(getColor(R.color.slate_grey));
-            if (label != null) {
-                label.setTextColor(getColor(R.color.slate_grey));
-                label.setTypeface(null, android.graphics.Typeface.NORMAL);
-            }
+        } catch (Exception e) {
+            Log.e("DashboardActivity", "Error highlighting nav item: " + e.getMessage());
         }
     }
     

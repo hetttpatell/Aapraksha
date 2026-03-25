@@ -261,13 +261,26 @@ public class SignupActivity extends AppCompatActivity {
             return;
         }
 
-        // TODO: Implement actual registration logic here
-        Toast.makeText(this, "Registration successful!", Toast.LENGTH_SHORT).show();
+        // Create user profile in Firestore with UserRepository
+        UserRepository userRepository = new UserRepository();
+        String emergencyPin = "1234"; // TODO: Let user set custom PIN in a separate screen
         
-        // Navigate to MainActivity after successful registration
-        Intent intent = new Intent(SignupActivity.this, MainActivity.class);
-        startActivity(intent);
-        finish();
+        userRepository.createUserProfile(
+                etFullName.getText().toString().trim(),
+                etEmail.getText().toString().trim(),
+                etPhone.getText().toString().trim(),
+                emergencyPin,
+                userId -> {
+                    Toast.makeText(SignupActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
+                    // Navigate to MainActivity after successful registration
+                    Intent intent = new Intent(SignupActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                },
+                errorMessage -> {
+                    Toast.makeText(SignupActivity.this, "Error: " + errorMessage, Toast.LENGTH_LONG).show();
+                }
+        );
     }
 
     @Override
