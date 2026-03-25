@@ -99,7 +99,17 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void startGoogleSignIn() {
+        Log.d(TAG, "Google Sign-In button clicked");
+        Toast.makeText(this, "Opening Google Sign-In...", Toast.LENGTH_SHORT).show();
+        
+        if (googleSignInClient == null) {
+            Log.e(TAG, "googleSignInClient is null!");
+            Toast.makeText(this, "Error: Google Sign-In not initialized", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
         Intent signInIntent = googleSignInClient.getSignInIntent();
+        Log.d(TAG, "Starting Google Sign-In activity");
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
@@ -107,17 +117,30 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         
+        Log.d(TAG, "onActivityResult: requestCode=" + requestCode + ", resultCode=" + resultCode);
+        
         if (requestCode == RC_SIGN_IN) {
+            if (data == null) {
+                Log.e(TAG, "Google Sign-In data is null");
+                Toast.makeText(this, "Sign-In cancelled or error occurred", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 if (account != null) {
                     Log.d(TAG, "Google Sign-In successful: " + account.getEmail());
+                    Toast.makeText(this, "Google Sign-In successful!", Toast.LENGTH_SHORT).show();
                     firebaseAuthWithGoogle(account.getIdToken());
+                } else {
+                    Log.e(TAG, "Google account is null");
+                    Toast.makeText(this, "Could not get Google account", Toast.LENGTH_SHORT).show();
                 }
             } catch (ApiException e) {
-                Log.e(TAG, "Google Sign-In failed: " + e.getStatusCode());
-                Toast.makeText(this, "Sign in failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Google Sign-In failed: " + e.getStatusCode(), e);
+                String errorMessage = "Sign in failed (Code: " + e.getStatusCode() + ")";
+                Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -148,6 +171,8 @@ public class LoginActivity extends AppCompatActivity {
         String phone = ""; // Google Sign-In doesn't provide phone by default
         String emergencyPin = "0000"; // Default PIN, user should set their own
         
+        Log.d(TAG, "Creating profile for: " + fullName + " (" + email + ")");
+        
         userRepository.createUserProfile(fullName, email, phone, emergencyPin,
                 new UserRepository.OnCompleteListener() {
                     @Override
@@ -161,8 +186,8 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onError(String errorMessage) {
                         Log.e(TAG, "Error creating user profile: " + errorMessage);
-                        // User already exists, just navigate to dashboard
-                        navigateToDashboard();
+                        Toast.makeText(LoginActivity.this, "Error: " + errorMessage, Toast.LENGTH_LONG).show();
+                        // Don't navigate on error - let user try again
                     }
                 });
     }
@@ -171,24 +196,6 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
         startActivity(intent);
         finish();
-    }
-    
-    private void setupListeners() {
-        ivTogglePassword.setOnClickListener(v -> togglePasswordVisibility());
-
-        btnLogin.setOnClickListener(v -> handleLogin());
-
-        tvForgotPassword.setOnClickListener(v -> {
-            Toast.makeText(this, "Forgot Password clicked", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to Forgot Password screen
-        });
-
-        tvSignUpLink.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
-            startActivity(intent);
-        });
-
-        btnGoogle.setOnClickListener(v -> startGoogleSignIn());
     }
 
     private void setupValidators() {
@@ -262,13 +269,13 @@ public class LoginActivity extends AppCompatActivity {
         String password = etPassword.getText().toString().trim();
 
         if (email.isEmpty()) {
-            etEmail.setError("Email or phone is required");
+            etEmail.setError("Email is required");
             etEmail.requestFocus();
             return;
         }
 
-        if (!isValidEmail(email) && !isValidPhone(email)) {
-            etEmail.setError("Enter valid email or phone");
+        if (!isValidEmail(email)) {
+            etEmail.setError("Enter valid email");
             etEmail.requestFocus();
             return;
         }
@@ -285,15 +292,8 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // Convert phone to email if needed (for demo purposes)
-        String authEmail = email;
-        if (isValidPhone(email)) {
-            // Use a placeholder email for phone login
-            authEmail = "user_" + email.replaceAll("[^0-9]", "") + "@aapraksha.local";
-        }
-
         Toast.makeText(this, "Logging in...", Toast.LENGTH_SHORT).show();
-        auth.signInWithEmailAndPassword(authEmail, password)
+        auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "Email login successful");
@@ -301,7 +301,9 @@ public class LoginActivity extends AppCompatActivity {
                         navigateToDashboard();
                     } else {
                         Log.e(TAG, "Email login failed", task.getException());
-                        Toast.makeText(LoginActivity.this, "Login failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        String errorMsg = task.getException() != null ? 
+                                task.getException().getMessage() : "Login failed";
+                        Toast.makeText(LoginActivity.this, "Login failed: " + errorMsg, Toast.LENGTH_SHORT).show();
                     }
                 });
     }

@@ -73,4 +73,9 @@
     <string name="register">Register</string>
     <string name="already_have_account">Already have an account? </string>
     <string name="login_here">Login here</string>
+    
+    <!-- Google Sign-In -->
+        <string name="default_web_client_id">769868135806-81uibpb7ctklttm4ab9eqlb4ulrofg0j.apps.googleusercontent.com</string>
+        <string name="another_string">Some other value</string>
+        <string name="yet_another_string">Another value</string>
 </resources>

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Patterns;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -13,6 +14,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 public class SignupActivity extends AppCompatActivity {
 
@@ -28,12 +31,17 @@ public class SignupActivity extends AppCompatActivity {
     
     private boolean isPasswordVisible = false;
     private boolean isConfirmPasswordVisible = false;
+    private FirebaseAuth auth;
+    private UserRepository userRepository;
+    private static final String TAG = "SignupActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
+        auth = FirebaseAuth.getInstance();
+        userRepository = new UserRepository();
         initViews();
         setupListeners();
         setupValidators();
@@ -261,23 +269,46 @@ public class SignupActivity extends AppCompatActivity {
             return;
         }
 
-        // Create user profile in Firestore with UserRepository
-        UserRepository userRepository = new UserRepository();
-        String emergencyPin = "1234"; // TODO: Let user set custom PIN in a separate screen
-        
-        userRepository.createUserProfile(
-                etFullName.getText().toString().trim(),
+        // First, create Firebase Auth user
+        registerWithFirebase(
                 etEmail.getText().toString().trim(),
-                etPhone.getText().toString().trim(),
-                emergencyPin,
+                password,
+                etFullName.getText().toString().trim(),
+                etPhone.getText().toString().trim()
+        );
+    }
+
+    private void registerWithFirebase(String email, String password, String fullName, String phone) {
+        Toast.makeText(this, "Creating account...", Toast.LENGTH_SHORT).show();
+        
+        auth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "Firebase registration successful");
+                        // User created in Firebase Auth, now create Firestore profile
+                        createUserProfile(fullName, email, phone);
+                    } else {
+                        Log.e(TAG, "Firebase registration failed", task.getException());
+                        String errorMessage = task.getException() != null ? 
+                                task.getException().getMessage() : "Registration failed";
+                        Toast.makeText(SignupActivity.this, "Error: " + errorMessage, Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
+    private void createUserProfile(String fullName, String email, String phone) {
+        String emergencyPin = "1234"; // TODO: Let user set custom PIN
+        
+        userRepository.createUserProfile(fullName, email, phone, emergencyPin,
                 userId -> {
+                    Log.d(TAG, "User profile created: " + userId);
                     Toast.makeText(SignupActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
-                    // Navigate to MainActivity after successful registration
-                    Intent intent = new Intent(SignupActivity.this, MainActivity.class);
+                    Intent intent = new Intent(SignupActivity.this, DashboardActivity.class);
                     startActivity(intent);
                     finish();
                 },
                 errorMessage -> {
+                    Log.e(TAG, "Error creating profile: " + errorMessage);
                     Toast.makeText(SignupActivity.this, "Error: " + errorMessage, Toast.LENGTH_LONG).show();
                 }
         );

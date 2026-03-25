@@ -2,6 +2,7 @@ package com.example.aapraksha;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -11,14 +12,30 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.firebase.auth.FirebaseAuth;
+
 public class SettingsActivity extends AppCompatActivity {
 
     private Switch switchVolumeSos;
+    private FirebaseAuth auth;
+    private GoogleSignInClient googleSignInClient;
+    private static final String TAG = "SettingsActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        // Initialize Firebase and Google Sign-In
+        auth = FirebaseAuth.getInstance();
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        googleSignInClient = GoogleSignIn.getClient(this, gso);
 
         // Back button
         ImageView btnBack = findViewById(R.id.btn_back);
@@ -120,13 +137,28 @@ public class SettingsActivity extends AppCompatActivity {
             .setTitle("Logout")
             .setMessage("Are you sure you want to logout from AapRaksha?")
             .setPositiveButton("Logout", (dialog, which) -> {
-                Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
+                performLogout();
             })
             .setNegativeButton("Cancel", null)
             .show();
+    }
+
+    private void performLogout() {
+        Log.d(TAG, "Logging out user");
+        
+        // Sign out from Firebase Auth
+        auth.signOut();
+        
+        // Sign out from Google Sign-In
+        googleSignInClient.signOut().addOnCompleteListener(task -> {
+            Log.d(TAG, "Google Sign-Out completed");
+            Toast.makeText(SettingsActivity.this, "Logged out successfully", Toast.LENGTH_SHORT).show();
+            
+            // Navigate to LoginActivity and clear all activities
+            Intent intent = new Intent(SettingsActivity.this, SplashActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        });
     }
 }

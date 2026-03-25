@@ -14,8 +14,12 @@
       },
       "oauth_client": [
         {
-          "client_id": "769868135806-81uibpb7ctklttm4ab9eqlb4ulrofg0j.apps.googleusercontent.com",
-          "client_type": 3
+          "client_id": "769868135806-dr9plmtl7ehhctq3e59cja8gi8342n0t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.aapraksha",
+            "certificate_hash": "2ce97c9c11c213f9454f7a511d8b26530cae40fb"
+          }
         }
       ],
       "api_key": [
@@ -25,12 +29,7 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "769868135806-81uibpb7ctklttm4ab9eqlb4ulrofg0j.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
