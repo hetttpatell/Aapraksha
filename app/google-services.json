@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "769868135806",
+    "project_id": "aap-raksha-cf3f4",
+    "storage_bucket": "aap-raksha-cf3f4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:769868135806:android:a266dd1b5d8ee1e9a2c72f",
+        "android_client_info": {
+          "package_name": "com.example.aapraksha"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "769868135806-81uibpb7ctklttm4ab9eqlb4ulrofg0j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuWPDRaTFHi4RkeKkhEloTKTPcTRpAwN8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "769868135806-81uibpb7ctklttm4ab9eqlb4ulrofg0j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
