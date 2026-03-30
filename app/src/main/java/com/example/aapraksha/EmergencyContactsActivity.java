@@ -13,8 +13,13 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EmergencyContactsActivity extends AppCompatActivity {
 
@@ -35,8 +40,8 @@ public class EmergencyContactsActivity extends AppCompatActivity {
 
         contacts = new ArrayList<>();
         
-        // Sample data
-        addSampleContacts();
+        // Load contacts from Firestore
+        loadContactsFromFirestore();
 
         fabAddContact.setOnClickListener(v -> showAddContactDialog());
 
@@ -49,12 +54,12 @@ public class EmergencyContactsActivity extends AppCompatActivity {
             navHome.setOnClickListener(v -> finish());
         }
     }
-
-    private void addSampleContacts() {
-        priorityContact = new EmergencyContact("John Doe", "+91 98765 43210", "Father", true);
-        contacts.add(new EmergencyContact("Aman Sharma", "+91 87654 32109", "Brother", false));
-        contacts.add(new EmergencyContact("Priya Verma", "+91 76543 21098", "Friend", false));
-        displayContacts();
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Reload contacts every time user comes back to this screen
+        loadContactsFromFirestore();
     }
 
     private void displayContacts() {
@@ -111,6 +116,23 @@ public class EmergencyContactsActivity extends AppCompatActivity {
         Button btnSave = dialogView.findViewById(R.id.btn_save_contact);
         Button btnCancel = dialogView.findViewById(R.id.btn_cancel);
 
+        // Get current user's phone for validation
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        final String[] currentUserPhone = {""};
+        if (auth.getCurrentUser() != null) {
+            String uid = auth.getCurrentUser().getUid();
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("users").document(uid).get()
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        String userPhone = doc.getString("phone");
+                        if (userPhone != null) {
+                            currentUserPhone[0] = userPhone;
+                        }
+                    }
+                });
+        }
+
         // Disable priority checkbox if priority contact already exists
         if (priorityContact != null) {
             checkboxPriority.setEnabled(false);
@@ -131,23 +153,88 @@ public class EmergencyContactsActivity extends AppCompatActivity {
                 return;
             }
 
-            EmergencyContact newContact = new EmergencyContact(name, phone, relation, isPriority);
-            
-            if (isPriority) {
-                priorityContact = newContact;
-                Toast.makeText(this, "Priority contact added successfully", Toast.LENGTH_SHORT).show();
-            } else {
-                contacts.add(newContact);
-                Toast.makeText(this, "Contact added successfully", Toast.LENGTH_SHORT).show();
+            // Validate: User cannot add their own phone
+            String phoneDigits = phone.replaceAll("[^0-9]", "");
+            String currentDigits = currentUserPhone[0].replaceAll("[^0-9]", "");
+            if (!phoneDigits.isEmpty() && phoneDigits.equals(currentDigits)) {
+                Toast.makeText(this, "You cannot add your own phone number", Toast.LENGTH_SHORT).show();
+                return;
             }
-            
-            displayContacts();
-            dialog.dismiss();
+
+            // Check for duplicate phone numbers
+            checkDuplicateContact(phoneDigits, name, phone, relation, isPriority, dialog);
         });
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
         dialog.show();
+    }
+
+    private void checkDuplicateContact(String phoneDigits, String name, String phone, String relation, boolean isPriority, AlertDialog dialog) {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() == null) return;
+
+        String uid = auth.getCurrentUser().getUid();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Query existing contacts to check for duplicates
+        db.collection("users").document(uid).collection("emergencyContacts")
+            .get()
+            .addOnSuccessListener(querySnapshot -> {
+                for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                    // Skip placeholder documents
+                    if (doc.getBoolean("placeholder") != null && doc.getBoolean("placeholder")) {
+                        continue;
+                    }
+
+                    String existingPhone = doc.getString("phone");
+                    if (existingPhone != null) {
+                        String existingDigits = existingPhone.replaceAll("[^0-9]", "");
+                        if (phoneDigits.equals(existingDigits)) {
+                            Toast.makeText(this, "This phone number already exists in your contacts", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
+                }
+
+                // No duplicate found - proceed to save
+                saveContactToFirestore(name, phone, relation, isPriority);
+                dialog.dismiss();
+            })
+            .addOnFailureListener(e -> {
+                Toast.makeText(this, "Error checking duplicates: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            });
+    }
+    
+    private void saveContactToFirestore(String name, String phone, String relation, boolean isPriority) {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() == null) return;
+
+        // Add phone validation
+        if (!SMSHelper.isValidIndianPhone(phone)) {
+            Toast.makeText(this, "Invalid Indian phone format. Use: 10 digits or +91 format", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String uid = auth.getCurrentUser().getUid();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        java.util.Map<String, Object> contact = new java.util.HashMap<>();
+        contact.put("name", name);
+        contact.put("phone", phone);
+        contact.put("relation", relation);
+        contact.put("isPriority", isPriority);
+        contact.put("timestamp", System.currentTimeMillis());
+
+        db.collection("users").document(uid).collection("emergencyContacts")
+            .add(contact)
+            .addOnSuccessListener(docRef -> {
+                Toast.makeText(this, "Contact saved successfully", Toast.LENGTH_SHORT).show();
+                loadContactsFromFirestore();
+            })
+            .addOnFailureListener(e -> {
+                Toast.makeText(this, "Failed to save contact: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            });
     }
 
     private void showEditContactDialog(int index, boolean isPriority) {
@@ -207,13 +294,44 @@ public class EmergencyContactsActivity extends AppCompatActivity {
     }
 
     private void deleteContact(int index) {
+        if (index < 0 || index >= contacts.size()) return;
+        
+        EmergencyContact contactToDelete = contacts.get(index);
+        String docId = contactToDelete.getContactId();
+        
         new AlertDialog.Builder(this)
             .setTitle("Delete Contact")
             .setMessage("Are you sure you want to delete this contact?")
             .setPositiveButton("Delete", (dialog, which) -> {
-                contacts.remove(index);
-                displayContacts();
-                Toast.makeText(this, "Contact deleted", Toast.LENGTH_SHORT).show();
+                // Delete from Firestore first
+                FirebaseAuth auth = FirebaseAuth.getInstance();
+                if (auth.getCurrentUser() == null) {
+                    Toast.makeText(this, "Not logged in", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                
+                String uid = auth.getCurrentUser().getUid();
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                
+                if (docId != null && !docId.isEmpty()) {
+                    db.collection("users").document(uid).collection("emergencyContacts")
+                        .document(docId)
+                        .delete()
+                        .addOnSuccessListener(aVoid -> {
+                            // Remove from list after successful Firestore deletion
+                            contacts.remove(index);
+                            displayContacts();
+                            Toast.makeText(this, "Contact deleted successfully", Toast.LENGTH_SHORT).show();
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(this, "Failed to delete contact: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        });
+                } else {
+                    // No docId, just remove from UI
+                    contacts.remove(index);
+                    displayContacts();
+                    Toast.makeText(this, "Contact removed from list", Toast.LENGTH_SHORT).show();
+                }
             })
             .setNegativeButton("Cancel", null)
             .show();
@@ -232,7 +350,53 @@ public class EmergencyContactsActivity extends AppCompatActivity {
             .show();
     }
 
+    private void loadContactsFromFirestore() {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() == null) return;
+
+        String uid = auth.getCurrentUser().getUid();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("users").document(uid).collection("emergencyContacts")
+            .get()
+            .addOnSuccessListener(querySnapshot -> {
+                contacts.clear();
+                priorityContact = null;
+                
+                for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                    // Skip placeholder document
+                    if (doc.getBoolean("placeholder") != null && doc.getBoolean("placeholder")) {
+                        continue;
+                    }
+                    
+                    String name = doc.getString("name");
+                    String phone = doc.getString("phone");
+                    String relation = doc.getString("relation");
+                    Boolean isPriority = doc.getBoolean("isPriority");
+                    
+                    // Skip if name or phone missing
+                    if (name == null || phone == null) {
+                        continue;
+                    }
+                    
+                    EmergencyContact contact = new EmergencyContact(name, phone, relation, isPriority != null && isPriority);
+                    contact.setContactId(doc.getId());  // Store the Firestore document ID
+                    
+                    if (isPriority != null && isPriority) {
+                        priorityContact = contact;
+                    } else {
+                        contacts.add(contact);
+                    }
+                }
+                displayContacts();
+            })
+            .addOnFailureListener(e -> {
+                Toast.makeText(EmergencyContactsActivity.this, "Failed to load contacts", Toast.LENGTH_SHORT).show();
+            });
+    }
+
     static class EmergencyContact {
+        private String contactId;  // Firestore document ID
         private String name;
         private String phone;
         private String relation;
@@ -243,6 +407,7 @@ public class EmergencyContactsActivity extends AppCompatActivity {
             this.phone = phone;
             this.relation = "";
             this.isPriority = false;
+            this.contactId = "";
         }
 
         public EmergencyContact(String name, String phone, String relation, boolean isPriority) {
@@ -250,11 +415,14 @@ public class EmergencyContactsActivity extends AppCompatActivity {
             this.phone = phone;
             this.relation = relation;
             this.isPriority = isPriority;
+            this.contactId = "";
         }
 
         public String getName() { return name; }
         public String getPhone() { return phone; }
         public String getRelation() { return relation; }
         public boolean isPriority() { return isPriority; }
+        public String getContactId() { return contactId; }
+        public void setContactId(String contactId) { this.contactId = contactId; }
     }
 }

@@ -10,6 +10,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.aapraksha.models.User;
+
 public class EditProfileActivity extends AppCompatActivity {
 
     private ImageView btnBack;
@@ -31,12 +34,18 @@ public class EditProfileActivity extends AppCompatActivity {
     private String originalEmail;
     private String originalPin;
     private boolean isPinVisible = false;
+    
+    private FirebaseAuth auth;
+    private UserRepository userRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
+        auth = FirebaseAuth.getInstance();
+        userRepository = new UserRepository();
+        
         initializeViews();
         setupClickListeners();
         loadUserData();
@@ -78,19 +87,32 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void loadUserData() {
-        // TODO: Load actual user data from SharedPreferences or database
-        // For now, using placeholder data
-        originalName = "John Doe";
-        originalPhone = "+91 98765 43210";
-        originalEmail = "john.doe@example.com";
-        originalPin = "1234";
+        // Load actual user data from Firebase
+        if (auth.getCurrentUser() == null) return;
+        
+        String userId = auth.getCurrentUser().getUid();
+        userRepository.getUserProfile(userId, new UserRepository.OnUserFetchListener() {
+            @Override
+            public void onSuccess(User user) {
+                if (user != null) {
+                    originalName = user.getFullName() != null ? user.getFullName() : "";
+                    originalPhone = user.getPhone() != null ? user.getPhone() : "";
+                    originalEmail = user.getEmail() != null ? user.getEmail() : "";
+                    originalPin = ""; // PIN is not stored in profile
+                    
+                    tvUserName.setText(originalName);
+                    etFullName.setText(originalName);
+                    etPhone.setText(originalPhone);
+                    etEmail.setText(originalEmail);
+                    tvMemberSince.setText("Member since " + (user.getMemberSince() != null ? user.getMemberSince() : ""));
+                }
+            }
 
-        tvUserName.setText(originalName);
-        etFullName.setText(originalName);
-        etPhone.setText(originalPhone);
-        etEmail.setText(originalEmail);
-        etEmergencyPin.setText(originalPin);
-        tvMemberSince.setText("Member since Jan 2024");
+            @Override
+            public void onError(String errorMessage) {
+                Toast.makeText(EditProfileActivity.this, "Failed to load profile: " + errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void togglePinVisibility() {

@@ -16,6 +16,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -71,6 +72,30 @@ public class SettingsActivity extends AppCompatActivity {
 
         // Setup bottom navigation
         setupBottomNav();
+        
+        // Load user settings from Firestore
+        loadUserSettings();
+    }
+
+    private void loadUserSettings() {
+        if (auth.getCurrentUser() == null) return;
+        
+        String uid = auth.getCurrentUser().getUid();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        
+        db.collection("users").document(uid)
+            .collection("settings")
+            .document("settings_1")
+            .get()
+            .addOnSuccessListener(doc -> {
+                if (doc.exists()) {
+                    Boolean volumeEnabled = doc.getBoolean("volumeButtonSosEnabled");
+                    if (volumeEnabled != null) {
+                        switchVolumeSos.setChecked(volumeEnabled);
+                    }
+                }
+            })
+            .addOnFailureListener(e -> Log.e(TAG, "Failed to load settings", e));
     }
 
     private void setupBottomNav() {

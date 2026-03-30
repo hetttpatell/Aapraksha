@@ -59,6 +59,7 @@ public class EmergencyContact implements Serializable {
     // ========== Getters & Setters ==========
     public String getContactId() { return contactId; }
     public void setContactId(String contactId) { this.contactId = contactId; }
+    public void setId(String id) { this.contactId = id; } // Firestore compatibility
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }

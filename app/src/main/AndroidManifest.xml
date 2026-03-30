@@ -109,9 +109,27 @@
             android:name=".NotificationSettingsActivity"
             android:exported="false" />
 
+
+        <!-- Profile Activity -->
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false" />
+
+        <!-- Location History Activity -->
+        <activity
+            android:name=".LocationHistoryActivity"
+            android:exported="false" />
+
         <!-- Location Tracking Service -->
         <service
             android:name=".LocationTrackingService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="location" />
+
+        <!-- Volume Button Service -->
+        <service
+            android:name=".VolumeButtonService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="location" />

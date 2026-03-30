@@ -9,6 +9,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 public class SafeScreenActivity extends AppCompatActivity {
 
     private TextView tvContactName;
@@ -17,16 +21,22 @@ public class SafeScreenActivity extends AppCompatActivity {
     private CardView btnCallContact;
     private CardView btnBackToDashboard;
 
-    // Priority contact details (TODO: Load from SharedPreferences or Database)
-    private String contactName = "John Doe";
-    private String contactRelation = "Father";
-    private String contactPhone = "+91 98765 43210";
+    // Priority contact details
+    private String contactName = "";
+    private String contactRelation = "";
+    private String contactPhone = "";
+    private UserRepository userRepository;
+    private FirebaseAuth auth;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_safe_screen);
 
+        auth = FirebaseAuth.getInstance();
+        userRepository = new UserRepository();
+        db = FirebaseFirestore.getInstance();
         initializeViews();
         loadPriorityContact();
         setupClickListeners();
@@ -41,11 +51,36 @@ public class SafeScreenActivity extends AppCompatActivity {
     }
 
     private void loadPriorityContact() {
-        // TODO: Load from SharedPreferences or Database
-        // For now using hardcoded data
-        tvContactName.setText(contactName);
-        tvContactRelation.setText(contactRelation);
-        tvContactPhone.setText(contactPhone);
+        // Load priority contact from Firestore
+        if (auth.getCurrentUser() == null) {
+            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String uid = auth.getCurrentUser().getUid();
+        db.collection("users").document(uid).collection("emergencyContacts")
+            .whereEqualTo("isPriority", true)
+            .limit(1)
+            .get()
+            .addOnSuccessListener(querySnapshot -> {
+                if (!querySnapshot.isEmpty()) {
+                    DocumentSnapshot doc = querySnapshot.getDocuments().get(0);
+                    contactName = doc.getString("name") != null ? doc.getString("name") : "No contact";
+                    contactRelation = doc.getString("relation") != null ? doc.getString("relation") : "";
+                    contactPhone = doc.getString("phone") != null ? doc.getString("phone") : "";
+                    
+                    tvContactName.setText(contactName);
+                    tvContactRelation.setText(contactRelation);
+                    tvContactPhone.setText(contactPhone);
+                } else {
+                    tvContactName.setText("No priority contact set");
+                    tvContactRelation.setText("");
+                    tvContactPhone.setText("");
+                }
+            })
+            .addOnFailureListener(e -> {
+                Toast.makeText(this, "Failed to load contact", Toast.LENGTH_SHORT).show();
+            });
     }
 
     private void setupClickListeners() {

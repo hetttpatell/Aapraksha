@@ -28,6 +28,10 @@ public class DashboardActivity extends AppCompatActivity {
     private TextView tvUserName;
     private FirebaseAuth auth;
     private UserRepository userRepository;
+    // Pulse views for animation
+    private View sosPulse1;
+    private View sosPulse2;
+    private View sosPulse3;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +41,9 @@ public class DashboardActivity extends AppCompatActivity {
         statusDot = findViewById(R.id.status_dot);
         tvSosStatus = findViewById(R.id.tv_sos_status);
         tvUserName = findViewById(R.id.username_text);
+        sosPulse1 = findViewById(R.id.sos_pulse_1);
+        sosPulse2 = findViewById(R.id.sos_pulse_2);
+        sosPulse3 = findViewById(R.id.sos_pulse_3);
         
         auth = FirebaseAuth.getInstance();
         userRepository = new UserRepository();
@@ -156,6 +163,24 @@ public class DashboardActivity extends AppCompatActivity {
         View navSafeZones = findViewById(R.id.nav_safe_zones);
         View navHistory = findViewById(R.id.nav_history);
         View navSettings = findViewById(R.id.nav_settings);
+        View btnSOS = findViewById(R.id.btn_sos);
+        View cardEmergencyContacts = findViewById(R.id.card_emergency_contacts);
+        
+        // Setup SOS button
+        if (btnSOS != null) {
+            btnSOS.setOnClickListener(v -> {
+                startContinuousPulse(sosPulse1, sosPulse2, sosPulse3);
+                triggerSOS();
+            });
+        }
+        
+        // Setup emergency contacts button
+        if (cardEmergencyContacts != null) {
+            cardEmergencyContacts.setOnClickListener(v -> {
+                Intent intent = new Intent(DashboardActivity.this, EmergencyContactsActivity.class);
+                startActivity(intent);
+            });
+        }
         
         // Highlight current screen (Home)
         highlightNavItem(navHome, true);
@@ -186,6 +211,16 @@ public class DashboardActivity extends AppCompatActivity {
                 startActivity(intent);
             });
         }
+    }
+    
+    private void triggerSOS() {
+        Toast.makeText(this, "SOS Triggered", Toast.LENGTH_SHORT).show();
+        // Add a short delay before launching SosTriggeredActivity
+        new Handler().postDelayed(() -> {
+            stopContinuousPulse(sosPulse1, sosPulse2, sosPulse3);
+            Intent intent = new Intent(this, SosTriggeredActivity.class);
+            startActivity(intent);
+        }, 2000); // 2 seconds delay
     }
     
     private void highlightNavItem(View navItem, boolean isActive) {

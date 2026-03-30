@@ -64,169 +64,26 @@ public class FirebaseInitializer {
 
     /**
      * Create USERS collection with sample data and subcollections
+     * NOTE: Removed dummy data - users are created via authentication only
      */
     private void createUsersCollection() {
-        Log.d(TAG, "Creating USERS collection...");
-        
-        // Get current user ID (or use test user)
-        String userId = "user123"; // Use auto-generated ID in production
-        
-        Map<String, Object> userData = new HashMap<>();
-        userData.put("email", "rajesh@example.com");
-        userData.put("phone", "9876543210");
-        userData.put("fullName", "Rajesh Kumar");
-        userData.put("accountStatus", "ACTIVE");
-        userData.put("emergencyPin", "encrypted_1234");
-        userData.put("profilePhotoUrl", "");
-        userData.put("memberSince", Timestamp.now());
-        userData.put("createdAt", Timestamp.now());
-        userData.put("updatedAt", Timestamp.now());
-        userData.put("lastLoginAt", Timestamp.now());
-        
-        // Add SOS Status
-        Map<String, Object> sosStatus = new HashMap<>();
-        sosStatus.put("isActive", false);
-        sosStatus.put("triggeredAt", null);
-        sosStatus.put("lastSosAlertId", "");
-        sosStatus.put("pinAttempts", 0);
-        userData.put("sosStatus", sosStatus);
-        
-        db.collection("users").document(userId).set(userData)
-            .addOnSuccessListener(aVoid -> {
-                Log.d(TAG, "User document created");
-                createEmergencyContactsSubcollection(userId);
-                createAlertHistorySubcollection(userId);
-                createSettingsSubcollection(userId);
-            })
-            .addOnFailureListener(e -> Log.e(TAG, "Error creating user", e));
+        Log.d(TAG, "Skipping dummy user creation - users created via authentication");
     }
 
     /**
      * Create EMERGENCY_CONTACTS subcollection under user
+     * NOTE: Removed dummy data - contacts added by users only
      */
     private void createEmergencyContactsSubcollection(String userId) {
-        Log.d(TAG, "Creating EMERGENCY_CONTACTS subcollection...");
-        
-        // Sample PRIORITY contact
-        Map<String, Object> priorityContact = new HashMap<>();
-        priorityContact.put("name", "Mother");
-        priorityContact.put("phone", "9876543210");
-        priorityContact.put("relation", "Mother");
-        priorityContact.put("email", "mother@example.com");
-        priorityContact.put("contactType", "PRIORITY");
-        priorityContact.put("isPriority", true);
-        priorityContact.put("status", "ACTIVE");
-        priorityContact.put("addedAt", Timestamp.now());
-        priorityContact.put("lastNotifiedAt", null);
-        priorityContact.put("totalNotifications", 0);
-        
-        // Notification methods
-        List<String> notificationMethods = new ArrayList<>();
-        notificationMethods.add("CALL");
-        notificationMethods.add("SMS");
-        notificationMethods.add("PUSH_NOTIFICATION");
-        priorityContact.put("notificationMethod", notificationMethods);
-        
-        // Notification preferences
-        Map<String, Object> notifPref = new HashMap<>();
-        notifPref.put("enableImmediateNotification", true);
-        notifPref.put("enableSMS", true);
-        notifPref.put("enableCall", true);
-        notifPref.put("enablePush", true);
-        notifPref.put("enableEmail", false);
-        priorityContact.put("notificationPreference", notifPref);
-        
-        // Response history (empty initially)
-        priorityContact.put("responseHistory", new ArrayList<>());
-        
-        db.collection("users").document(userId).collection("emergency_contacts")
-            .document("contact_1").set(priorityContact)
-            .addOnSuccessListener(aVoid -> Log.d(TAG, "Priority contact created"))
-            .addOnFailureListener(e -> Log.e(TAG, "Error creating priority contact", e));
-        
-        // Sample NORMAL contact
-        Map<String, Object> normalContact = new HashMap<>();
-        normalContact.put("name", "Best Friend");
-        normalContact.put("phone", "8765432109");
-        normalContact.put("relation", "Friend");
-        normalContact.put("email", "");
-        normalContact.put("contactType", "NORMAL");
-        normalContact.put("isPriority", false);
-        normalContact.put("status", "ACTIVE");
-        normalContact.put("addedAt", Timestamp.now());
-        normalContact.put("totalNotifications", 0);
-        
-        List<String> normalNotifMethods = new ArrayList<>();
-        normalNotifMethods.add("SMS");
-        normalNotifMethods.add("PUSH_NOTIFICATION");
-        normalContact.put("notificationMethod", normalNotifMethods);
-        
-        Map<String, Object> normalNotifPref = new HashMap<>();
-        normalNotifPref.put("enableImmediateNotification", true);
-        normalNotifPref.put("enableSMS", true);
-        normalNotifPref.put("enableCall", false);
-        normalNotifPref.put("enablePush", true);
-        normalNotifPref.put("enableEmail", false);
-        normalContact.put("notificationPreference", normalNotifPref);
-        
-        normalContact.put("responseHistory", new ArrayList<>());
-        
-        db.collection("users").document(userId).collection("emergency_contacts")
-            .document("contact_2").set(normalContact)
-            .addOnSuccessListener(aVoid -> Log.d(TAG, "Normal contact created"))
-            .addOnFailureListener(e -> Log.e(TAG, "Error creating normal contact", e));
+        Log.d(TAG, "Skipping dummy emergency contacts - will be added by users");
     }
 
     /**
      * Create ALERT_HISTORY subcollection under user
+     * NOTE: Removed dummy data - alerts created when SOS is triggered
      */
     private void createAlertHistorySubcollection(String userId) {
-        Log.d(TAG, "Creating ALERT_HISTORY subcollection...");
-        
-        Map<String, Object> alertHistory = new HashMap<>();
-        alertHistory.put("alertId", "alert_abc123");
-        alertHistory.put("alertType", "SOS");
-        alertHistory.put("alertStatus", "RESOLVED");
-        alertHistory.put("notes", "Test alert - no emergency");
-        alertHistory.put("reportedToAuthorities", false);
-        
-        // Timing
-        Map<String, Object> timing = new HashMap<>();
-        timing.put("triggeredAt", Timestamp.now());
-        timing.put("cancelledAt", null);
-        timing.put("resolvedAt", null);
-        timing.put("totalDuration", 0);
-        alertHistory.put("timing", timing);
-        
-        // Location
-        Map<String, Object> location = new HashMap<>();
-        location.put("latitude", 28.5244);
-        location.put("longitude", 77.1855);
-        location.put("address", "Gurgaon, Haryana");
-        location.put("area", "Gurgaon");
-        location.put("accuracy", 10.5);
-        alertHistory.put("location", location);
-        
-        // Contacts notified
-        Map<String, Object> contactsNotif = new HashMap<>();
-        contactsNotif.put("totalCount", 1);
-        contactsNotif.put("respondedCount", 0);
-        contactsNotif.put("notRespondedCount", 1);
-        contactsNotif.put("priorityContactResponded", false);
-        contactsNotif.put("notificationsList", new ArrayList<>());
-        alertHistory.put("contactsNotified", contactsNotif);
-        
-        // Tags
-        List<String> tags = new ArrayList<>();
-        tags.add("TEST_ALERT");
-        alertHistory.put("tags", tags);
-        
-        alertHistory.put("sharedWith", new ArrayList<>());
-        
-        db.collection("users").document(userId).collection("alert_history")
-            .document("history_1").set(alertHistory)
-            .addOnSuccessListener(aVoid -> Log.d(TAG, "Alert history created"))
-            .addOnFailureListener(e -> Log.e(TAG, "Error creating alert history", e));
+        Log.d(TAG, "Skipping dummy alert history - alerts created when triggered");
     }
 
     /**
@@ -280,55 +137,10 @@ public class FirebaseInitializer {
 
     /**
      * Create SOS_ALERTS collection with sample alert
+     * NOTE: Removed dummy data - alerts created when SOS is triggered
      */
     private void createSOSAlertsCollection() {
-        Log.d(TAG, "Creating SOS_ALERTS collection...");
-        
-        Map<String, Object> sosAlert = new HashMap<>();
-        sosAlert.put("userId", "user123");
-        sosAlert.put("userName", "Rajesh Kumar");
-        sosAlert.put("userPhone", "9876543210");
-        sosAlert.put("status", "RESOLVED");
-        sosAlert.put("alertMessage", "EMERGENCY! Need help at my current location.");
-        sosAlert.put("visibility", "CONTACTS_ONLY");
-        
-        // SOS Data
-        Map<String, Object> sosData = new HashMap<>();
-        sosData.put("triggeredAt", Timestamp.now());
-        sosData.put("cancelledAt", null);
-        sosData.put("duration", 0);
-        sosAlert.put("sosData", sosData);
-        
-        // Location
-        Map<String, Object> location = new HashMap<>();
-        location.put("latitude", 28.5244);
-        location.put("longitude", 77.1855);
-        location.put("address", "Cyber House 2, Gurgaon");
-        location.put("accuracy", 12.5);
-        sosAlert.put("location", location);
-        
-        // Alert Details
-        Map<String, Object> alertDetails = new HashMap<>();
-        alertDetails.put("batteryLevel", 75);
-        alertDetails.put("networkType", "4G");
-        alertDetails.put("osVersion", "12");
-        alertDetails.put("appVersion", "1.0");
-        sosAlert.put("alertDetails", alertDetails);
-        
-        // Notifications
-        Map<String, Object> notifications = new HashMap<>();
-        notifications.put("totalContactsNotified", 1);
-        notifications.put("audioCount", 1);
-        notifications.put("smsCount", 1);
-        sosAlert.put("notifications", notifications);
-        
-        // Responses and media
-        sosAlert.put("responses", new ArrayList<>());
-        sosAlert.put("media", new ArrayList<>());
-        
-        db.collection("sos_alerts").document("alert_abc123").set(sosAlert)
-            .addOnSuccessListener(aVoid -> Log.d(TAG, "SOS alert created"))
-            .addOnFailureListener(e -> Log.e(TAG, "Error creating SOS alert", e));
+        Log.d(TAG, "Skipping dummy SOS alerts - alerts created when triggered");
     }
 
     /**

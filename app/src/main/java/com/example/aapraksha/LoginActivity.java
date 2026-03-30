@@ -193,6 +193,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void navigateToDashboard() {
+        // All users go to the same dashboard (no role-based routing)
         Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
         startActivity(intent);
         finish();
@@ -298,7 +299,9 @@ public class LoginActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "Email login successful");
                         Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
-                        navigateToDashboard();
+                        
+                        // After successful login, ask for PIN
+                        showPINDialog();
                     } else {
                         Log.e(TAG, "Email login failed", task.getException());
                         String errorMsg = task.getException() != null ? 
@@ -306,6 +309,65 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, "Login failed: " + errorMsg, Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+    
+    private void showPINDialog() {
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
+        builder.setTitle("Enter Emergency PIN");
+        builder.setMessage("Enter your 4-digit emergency PIN to complete login");
+        
+        EditText etPin = new EditText(this);
+        etPin.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+        etPin.setHint("Enter PIN");
+        builder.setView(etPin);
+        
+        builder.setPositiveButton("Verify", (dialog, which) -> {
+            String enteredPin = etPin.getText().toString().trim();
+            
+            if (enteredPin.isEmpty()) {
+                Toast.makeText(LoginActivity.this, "PIN cannot be empty", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            
+            if (enteredPin.length() != 4) {
+                Toast.makeText(LoginActivity.this, "PIN must be 4 digits", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            
+            // Verify PIN with Firestore
+            verifyPIN(enteredPin);
+        });
+        
+        builder.setNegativeButton("Cancel", (dialog, which) -> {
+            // Logout if user cancels PIN verification
+            auth.signOut();
+            Toast.makeText(LoginActivity.this, "Login cancelled", Toast.LENGTH_SHORT).show();
+        });
+        
+        builder.setCancelable(false);
+        builder.show();
+    }
+    
+    private void verifyPIN(String enteredPin) {
+        String userId = auth.getCurrentUser().getUid();
+        userRepository.getUserProfile(userId, new UserRepository.OnUserFetchListener() {
+            @Override
+            public void onSuccess(com.example.aapraksha.models.User user) {
+                if (user != null && user.getEmergencyPin() != null && user.getEmergencyPin().equals(enteredPin)) {
+                    Toast.makeText(LoginActivity.this, "PIN verified! Welcome!", Toast.LENGTH_SHORT).show();
+                    navigateToDashboard();
+                } else {
+                    Toast.makeText(LoginActivity.this, "Incorrect PIN", Toast.LENGTH_SHORT).show();
+                    auth.signOut();
+                }
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Toast.makeText(LoginActivity.this, "Error verifying PIN: " + errorMessage, Toast.LENGTH_SHORT).show();
+                auth.signOut();
+            }
+        });
     }
 
     @Override

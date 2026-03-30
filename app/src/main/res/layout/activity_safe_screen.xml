@@ -400,7 +400,7 @@
                         android:id="@+id/tv_contact_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="John Doe"
+                        android:text=""
                         android:fontFamily="@font/montserrat_bold"
                         android:textColor="@color/text_on_dark"
                         android:textSize="16sp" />
@@ -409,7 +409,7 @@
                         android:id="@+id/tv_contact_relation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Father"
+                        android:text=""
                         android:fontFamily="@font/montserrat"
                         android:textColor="@color/electric_indigo_light"
                         android:textSize="12sp"
