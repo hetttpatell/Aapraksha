@@ -1,0 +1,146 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                  🚨 DELETE DUPLICATE FILES - BOTH OF THEM 🚨                 ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+ERROR RECEIVED:
+───────────────────────────────────────────────────────────────────────────────
+Android resource linking failed
+com.example.aapraksha.app-main-55:/layout/activity_sos_triggered_new.xml:291: 
+error: 'auto' is incompatible with attribute layout_marginStart (attr) dimension.
+
+CAUSE:
+───────────────────────────────────────────────────────────────────────────────
+TWO DUPLICATE FILES EXIST:
+
+1. SosTriggeredActivity_new.java ✗ (DELETE)
+   Location: app\src\main\java\com\example\aapraksha\
+
+2. activity_sos_triggered_new.xml ✗ (DELETE)
+   Location: app\src\main\res\layout\
+
+THE CORRECT FILES TO KEEP:
+───────────────────────────────────────────────────────────────────────────────
+
+✓ SosTriggeredActivity.java
+  Location: app\src\main\java\com\example\aapraksha\
+
+✓ activity_sos_triggered.xml
+  Location: app\src\main\res\layout\
+
+
+FILES TO DELETE:
+═══════════════════════════════════════════════════════════════════════════════
+
+FILE 1:
+───────────────────────────────────────────────────────────────────────────────
+C:\Users\Jitu\AndroidStudioProjects\Aapraksha\
+  app\src\main\java\com\example\aapraksha\
+  SosTriggeredActivity_new.java
+
+FILE 2:
+───────────────────────────────────────────────────────────────────────────────
+C:\Users\Jitu\AndroidStudioProjects\Aapraksha\
+  app\src\main\res\layout\
+  activity_sos_triggered_new.xml
+
+
+HOW TO DELETE - CHOOSE ONE METHOD:
+═══════════════════════════════════════════════════════════════════════════════
+
+METHOD 1 - ANDROID STUDIO (Recommended):
+───────────────────────────────────────────────────────────────────────────────
+1. In Android Studio Project panel (left):
+   - Expand: app → java → com.example.aapraksha
+   - Find: SosTriggeredActivity_new.java
+   - Right-click → Delete → Confirm
+
+2. In Android Studio Project panel (left):
+   - Expand: app → res → layout
+   - Find: activity_sos_triggered_new.xml
+   - Right-click → Delete → Confirm
+
+3. Build → Clean Project
+4. Build → Rebuild Project
+5. See: BUILD SUCCESSFUL ✓
+
+
+METHOD 2 - FILE EXPLORER:
+───────────────────────────────────────────────────────────────────────────────
+1. Open File Explorer (Windows + E)
+
+2. Delete File 1:
+   - Navigate: C:\Users\Jitu\AndroidStudioProjects\Aapraksha\
+              app\src\main\java\com\example\aapraksha\
+   - Right-click: SosTriggeredActivity_new.java → Delete
+
+3. Delete File 2:
+   - Navigate: C:\Users\Jitu\AndroidStudioProjects\Aapraksha\
+              app\src\main\res\layout\
+   - Right-click: activity_sos_triggered_new.xml → Delete
+
+4. Back in Android Studio:
+   - Build → Clean Project
+   - Build → Rebuild Project
+   - See: BUILD SUCCESSFUL ✓
+
+
+METHOD 3 - COMMAND PROMPT:
+───────────────────────────────────────────────────────────────────────────────
+Open Command Prompt and run these commands:
+
+del "C:\Users\Jitu\AndroidStudioProjects\Aapraksha\app\src\main\java\com\example\aapraksha\SosTriggeredActivity_new.java"
+
+del "C:\Users\Jitu\AndroidStudioProjects\Aapraksha\app\src\main\res\layout\activity_sos_triggered_new.xml"
+
+Then in Android Studio:
+- Build → Clean Project
+- Build → Rebuild Project
+- See: BUILD SUCCESSFUL ✓
+
+
+VERIFICATION CHECKLIST:
+═══════════════════════════════════════════════════════════════════════════════
+
+After deletion, verify:
+
+☐ SosTriggeredActivity_new.java - DELETED
+☐ activity_sos_triggered_new.xml - DELETED
+☐ SosTriggeredActivity.java - EXISTS (with enhancements)
+☐ activity_sos_triggered.xml - EXISTS (with theme colors)
+☐ Build → Clean Project - COMPLETED
+☐ Build → Rebuild Project - COMPLETED
+☐ BUILD SUCCESSFUL - VISIBLE (green, no red errors)
+
+
+WHAT YOU'RE KEEPING:
+═══════════════════════════════════════════════════════════════════════════════
+
+✓ SosTriggeredActivity.java (398 lines)
+  - Live location updates
+  - Contact counter
+  - Accuracy indicator
+  - Reverse geocoding
+  - All enhancements
+
+✓ activity_sos_triggered.xml (494 lines)
+  - Minimal redesign
+  - Theme colors (Electric Indigo + Soft Lavender)
+  - Live data cards
+  - Material3 styling
+  - All improvements
+
+
+NEXT STEPS AFTER SUCCESSFUL BUILD:
+═══════════════════════════════════════════════════════════════════════════════
+
+1. ✓ Delete both _new files
+2. ✓ Rebuild (BUILD SUCCESSFUL)
+3. → Open QUICK_TEST_GUIDE.md
+4. → Follow 10 test scenarios
+5. → Log results
+6. → Complete!
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                    DELETE BOTH FILES AND REBUILD ✓
+═══════════════════════════════════════════════════════════════════════════════

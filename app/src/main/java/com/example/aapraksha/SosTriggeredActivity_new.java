@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class SosTriggeredActivity extends AppCompatActivity {
+public class SosTriggeredActivity_new extends AppCompatActivity {
 
     private static final String TAG = "SOS_TRIGGERED";
     private static final int PERMISSION_REQUEST_CODE = 100;
