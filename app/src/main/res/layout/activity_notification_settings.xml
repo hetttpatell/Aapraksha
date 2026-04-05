@@ -166,7 +166,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="Record audio during emergency for evidence and trigger voice-activated SOS alerts"
+                            android:text="Record audio during emergency for evidence"
                             android:fontFamily="@font/montserrat_regular"
                             android:textColor="@color/slate_grey"
                             android:textSize="12sp"

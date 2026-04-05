@@ -29,6 +29,9 @@
     <string name="contacts_add">Add Contact</string>
     <string name="contacts_empty">No emergency contacts added</string>
 
+    <!-- Accessibility Service -->
+    <string name="accessibility_service_description">AapRaksha uses this service to detect when the volume button is held for 3 seconds to trigger an emergency SOS alert.</string>
+
     <!-- Settings -->
     <string name="settings_title">Settings</string>
     <string name="settings_profile">Profile</string>

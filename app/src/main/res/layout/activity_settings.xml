@@ -46,17 +46,6 @@
                 android:textColor="@color/text_on_dark"
                 android:textSize="18sp" />
 
-            <ImageView
-                android:id="@+id/btn_menu"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_menu"
-                android:contentDescription="Menu"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="@color/text_on_dark" />
-
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
@@ -75,62 +64,220 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- User Profile Section -->
+            <!-- ===== PROFILE SECTION ===== -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MY PROFILE"
+                android:fontFamily="@font/montserrat_bold"
+                android:textColor="@color/slate_grey"
+                android:textSize="11sp"
+                android:letterSpacing="0.12"
+                android:layout_marginBottom="14dp" />
+
+            <!-- Profile Header Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="#1A2332"
                 app:cardElevation="0dp"
                 app:cardCornerRadius="16dp"
-                android:layout_marginBottom="24dp">
+                android:layout_marginBottom="12dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical">
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
-                    <!-- Profile Image -->
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        app:cardCornerRadius="30dp"
-                        app:cardElevation="0dp">
+                    <!-- Avatar Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="20dp">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            app:cardCornerRadius="32dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#2A3F5F">
+
+                            <ImageView
+                                android:id="@+id/profile_image"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:src="@drawable/ic_profile"
+                                android:scaleType="centerCrop"
+                                app:tint="@color/electric_indigo_light" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="16dp">
+
+                            <TextView
+                                android:id="@+id/tv_user_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Loading..."
+                                android:fontFamily="@font/montserrat_bold"
+                                android:textColor="@color/text_on_dark"
+                                android:textSize="17sp" />
+
+                            <TextView
+                                android:id="@+id/tv_account_status"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="● ACTIVE"
+                                android:fontFamily="@font/montserrat_semibold"
+                                android:textColor="#4CAF50"
+                                android:textSize="11sp"
+                                android:letterSpacing="0.05" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Divider -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#1E2D40"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Email Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="14dp">
 
                         <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:src="@drawable/ic_profile"
-                            android:scaleType="centerCrop"
-                            android:background="@color/electric_indigo_light" />
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_email"
+                            app:tint="#6B7CA4" />
 
-                    </androidx.cardview.widget.CardView>
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="14dp">
 
-                    <!-- User Info -->
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Email"
+                                android:fontFamily="@font/montserrat"
+                                android:textColor="@color/slate_grey"
+                                android:textSize="11sp" />
+
+                            <TextView
+                                android:id="@+id/tv_user_email"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="—"
+                                android:fontFamily="@font/montserrat_semibold"
+                                android:textColor="@color/text_on_dark"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Phone Row -->
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginStart="16dp">
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="14dp">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Arjun Sharma"
-                            android:fontFamily="@font/montserrat_bold"
-                            android:textColor="@color/text_on_dark"
-                            android:textSize="18sp" />
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_phone"
+                            app:tint="#6B7CA4" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="+91 98765 43210"
-                            android:fontFamily="@font/montserrat_regular"
-                            android:textColor="@color/slate_grey"
-                            android:textSize="13sp" />
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="14dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Phone"
+                                android:fontFamily="@font/montserrat"
+                                android:textColor="@color/slate_grey"
+                                android:textSize="11sp" />
+
+                            <TextView
+                                android:id="@+id/tv_user_phone"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="—"
+                                android:fontFamily="@font/montserrat_semibold"
+                                android:textColor="@color/text_on_dark"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Member Since Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_history"
+                            app:tint="#6B7CA4" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="14dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Member Since"
+                                android:fontFamily="@font/montserrat"
+                                android:textColor="@color/slate_grey"
+                                android:textSize="11sp" />
+
+                            <TextView
+                                android:id="@+id/tv_member_since"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="—"
+                                android:fontFamily="@font/montserrat_semibold"
+                                android:textColor="@color/text_on_dark"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
 
                     </LinearLayout>
 
@@ -138,16 +285,193 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!-- SAFETY CONTROLS Section -->
+            <!-- Edit Profile Button -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/btn_edit_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="28dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#1E2D40"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:paddingVertical="14dp"
+                    android:paddingHorizontal="16dp">
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_edit"
+                        app:tint="@color/electric_indigo_light" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="Edit Profile"
+                        android:fontFamily="@font/montserrat_semibold"
+                        android:textColor="@color/electric_indigo_light"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- ===== EMERGENCY PIN SECTION ===== -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SECURITY"
+                android:fontFamily="@font/montserrat_bold"
+                android:textColor="@color/slate_grey"
+                android:textSize="11sp"
+                android:letterSpacing="0.12"
+                android:layout_marginBottom="14dp" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_emergency_pin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="28dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#1A2332">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <!-- Header Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="4dp">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            app:cardBackgroundColor="#1F3A5F"
+                            app:cardElevation="0dp"
+                            app:cardCornerRadius="18dp">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_shield"
+                                app:tint="@color/electric_indigo_light" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="14dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Emergency PIN"
+                                android:fontFamily="@font/montserrat_bold"
+                                android:textColor="@color/electric_indigo_light"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Read only — cannot be changed here"
+                                android:fontFamily="@font/montserrat"
+                                android:textColor="@color/slate_grey"
+                                android:textSize="11sp"
+                                android:layout_marginTop="2dp" />
+
+                        </LinearLayout>
+
+                        <!-- Lock badge -->
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_lock"
+                            app:tint="#6B7CA4" />
+
+                    </LinearLayout>
+
+                    <!-- Divider -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#1E2D40"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- PIN Display Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/tv_emergency_pin"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="••••"
+                            android:fontFamily="@font/montserrat_bold"
+                            android:textColor="@color/text_on_dark"
+                            android:textSize="26sp"
+                            android:letterSpacing="0.4" />
+
+                        <ImageView
+                            android:id="@+id/btn_toggle_pin_visibility"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/ic_eye_off"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            app:tint="@color/slate_grey" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="This PIN is required to deactivate emergency alerts. Contact support to change it."
+                        android:fontFamily="@font/montserrat"
+                        android:textColor="@color/slate_grey"
+                        android:textSize="11sp"
+                        android:layout_marginTop="12dp"
+                        android:lineSpacingExtra="3dp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- ===== SAFETY CONTROLS SECTION ===== -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="SAFETY CONTROLS"
                 android:fontFamily="@font/montserrat_bold"
                 android:textColor="@color/slate_grey"
-                android:textSize="12sp"
-                android:letterSpacing="0.1"
-                android:layout_marginBottom="12dp" />
+                android:textSize="11sp"
+                android:letterSpacing="0.12"
+                android:layout_marginBottom="14dp" />
 
             <!-- Volume Button SOS Card -->
             <androidx.cardview.widget.CardView
@@ -155,17 +479,20 @@
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="#1A2332"
                 app:cardElevation="0dp"
-                app:cardCornerRadius="12dp"
-                android:layout_marginBottom="24dp">
+                app:cardCornerRadius="16dp"
+                android:layout_marginBottom="28dp">
 
                 <LinearLayout
+                    android:id="@+id/row_volume_sos"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:padding="16dp"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
 
-                    <!-- Shield Icon -->
                     <androidx.cardview.widget.CardView
                         android:layout_width="40dp"
                         android:layout_height="40dp"
@@ -174,15 +501,14 @@
                         app:cardCornerRadius="20dp">
 
                         <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
                             android:layout_gravity="center"
                             android:src="@drawable/ic_shield"
                             app:tint="@color/electric_indigo_light" />
 
                     </androidx.cardview.widget.CardView>
 
-                    <!-- Text Content -->
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -194,16 +520,17 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Enable Volume Button SOS"
+                            android:text="Volume Button SOS"
                             android:fontFamily="@font/montserrat_semibold"
                             android:textColor="@color/text_on_dark"
                             android:textSize="15sp" />
 
                         <TextView
+                            android:id="@+id/tv_volume_sos_status"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="Hold both volume buttons for 3 seconds to alert emergency contacts"
+                            android:text="Hold both volume buttons 3 seconds to trigger SOS"
                             android:fontFamily="@font/montserrat_regular"
                             android:textColor="@color/slate_grey"
                             android:textSize="12sp"
@@ -211,29 +538,484 @@
 
                     </LinearLayout>
 
-                    <!-- Toggle Switch -->
                     <Switch
                         android:id="@+id/switch_volume_sos"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true"
                         android:thumb="@drawable/switch_thumb"
-                        android:track="@drawable/switch_track" />
+                        android:track="@drawable/switch_track"
+                        android:enabled="false" />
 
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 
-            <!-- APP SETTINGS Section -->
+            <!-- ===== APP PERMISSIONS SECTION ===== -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="APP PERMISSIONS"
+                android:fontFamily="@font/montserrat_bold"
+                android:textColor="@color/slate_grey"
+                android:textSize="11sp"
+                android:letterSpacing="0.12"
+                android:layout_marginBottom="14dp" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="#1A2332"
+                app:cardElevation="0dp"
+                app:cardCornerRadius="16dp"
+                android:layout_marginBottom="28dp">
+
+                <LinearLayout
+                    android:id="@+id/permissions_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+
+                    <!-- Location Permission Row -->
+                    <LinearLayout
+                        android:id="@+id/row_perm_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="12dp"
+                        android:gravity="center_vertical"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            app:cardBackgroundColor="#162030"
+                            app:cardElevation="0dp"
+                            app:cardCornerRadius="10dp">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_location"
+                                app:tint="#7C9CBF" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="14dp"
+                            android:layout_marginEnd="8dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Location"
+                                android:fontFamily="@font/montserrat_semibold"
+                                android:textColor="@color/text_on_dark"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/tv_perm_location_status"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Required for SOS tracking"
+                                android:fontFamily="@font/montserrat"
+                                android:textColor="@color/slate_grey"
+                                android:textSize="11sp"
+                                android:layout_marginTop="2dp" />
+
+                        </LinearLayout>
+
+                        <Switch
+                            android:id="@+id/switch_perm_location"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:thumb="@drawable/switch_thumb"
+                            android:track="@drawable/switch_track"
+                            android:enabled="false"
+                            android:checked="false" />
+
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#0D1927" android:layout_marginHorizontal="12dp" />
+
+                    <!-- SMS Permission Row -->
+                    <LinearLayout
+                        android:id="@+id/row_perm_sms"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="12dp"
+                        android:gravity="center_vertical"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            app:cardBackgroundColor="#162030"
+                            app:cardElevation="0dp"
+                            app:cardCornerRadius="10dp">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_contacts"
+                                app:tint="#7C9CBF" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="14dp"
+                            android:layout_marginEnd="8dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Send SMS"
+                                android:fontFamily="@font/montserrat_semibold"
+                                android:textColor="@color/text_on_dark"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/tv_perm_sms_status"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Alert emergency contacts via SMS"
+                                android:fontFamily="@font/montserrat"
+                                android:textColor="@color/slate_grey"
+                                android:textSize="11sp"
+                                android:layout_marginTop="2dp" />
+
+                        </LinearLayout>
+
+                        <Switch
+                            android:id="@+id/switch_perm_sms"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:thumb="@drawable/switch_thumb"
+                            android:track="@drawable/switch_track"
+                            android:enabled="false"
+                            android:checked="false" />
+
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#0D1927" android:layout_marginHorizontal="12dp" />
+
+                    <!-- Camera Permission Row -->
+                    <LinearLayout
+                        android:id="@+id/row_perm_camera"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="12dp"
+                        android:gravity="center_vertical"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            app:cardBackgroundColor="#162030"
+                            app:cardElevation="0dp"
+                            app:cardCornerRadius="10dp">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_camera"
+                                app:tint="#7C9CBF" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="14dp"
+                            android:layout_marginEnd="8dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Camera"
+                                android:fontFamily="@font/montserrat_semibold"
+                                android:textColor="@color/text_on_dark"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/tv_perm_camera_status"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Capture evidence during SOS"
+                                android:fontFamily="@font/montserrat"
+                                android:textColor="@color/slate_grey"
+                                android:textSize="11sp"
+                                android:layout_marginTop="2dp" />
+
+                        </LinearLayout>
+
+                        <Switch
+                            android:id="@+id/switch_perm_camera"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:thumb="@drawable/switch_thumb"
+                            android:track="@drawable/switch_track"
+                            android:enabled="false"
+                            android:checked="false" />
+
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#0D1927" android:layout_marginHorizontal="12dp" />
+
+                    <!-- Microphone Permission Row -->
+                    <LinearLayout
+                        android:id="@+id/row_perm_microphone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="12dp"
+                        android:gravity="center_vertical"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            app:cardBackgroundColor="#162030"
+                            app:cardElevation="0dp"
+                            app:cardCornerRadius="10dp">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_mic"
+                                app:tint="#7C9CBF" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="14dp"
+                            android:layout_marginEnd="8dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Microphone"
+                                android:fontFamily="@font/montserrat_semibold"
+                                android:textColor="@color/text_on_dark"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/tv_perm_mic_status"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Record audio evidence during SOS"
+                                android:fontFamily="@font/montserrat"
+                                android:textColor="@color/slate_grey"
+                                android:textSize="11sp"
+                                android:layout_marginTop="2dp" />
+
+                        </LinearLayout>
+
+                        <Switch
+                            android:id="@+id/switch_perm_mic"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:thumb="@drawable/switch_thumb"
+                            android:track="@drawable/switch_track"
+                            android:enabled="false"
+                            android:checked="false" />
+
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#0D1927" android:layout_marginHorizontal="12dp" />
+
+                    <!-- Contacts Permission Row -->
+                    <LinearLayout
+                        android:id="@+id/row_perm_contacts"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="12dp"
+                        android:gravity="center_vertical"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            app:cardBackgroundColor="#162030"
+                            app:cardElevation="0dp"
+                            app:cardCornerRadius="10dp">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_contacts"
+                                app:tint="#7C9CBF" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="14dp"
+                            android:layout_marginEnd="8dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Contacts"
+                                android:fontFamily="@font/montserrat_semibold"
+                                android:textColor="@color/text_on_dark"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/tv_perm_contacts_status"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Pick emergency contacts from phonebook"
+                                android:fontFamily="@font/montserrat"
+                                android:textColor="@color/slate_grey"
+                                android:textSize="11sp"
+                                android:layout_marginTop="2dp" />
+
+                        </LinearLayout>
+
+                        <Switch
+                            android:id="@+id/switch_perm_contacts"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:thumb="@drawable/switch_thumb"
+                            android:track="@drawable/switch_track"
+                            android:enabled="false"
+                            android:checked="false" />
+
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#0D1927" android:layout_marginHorizontal="12dp" />
+
+                    <!-- Call Phone Permission Row -->
+                    <LinearLayout
+                        android:id="@+id/row_perm_call"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="12dp"
+                        android:gravity="center_vertical"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            app:cardBackgroundColor="#162030"
+                            app:cardElevation="0dp"
+                            app:cardCornerRadius="10dp">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_phone"
+                                app:tint="#7C9CBF" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="14dp"
+                            android:layout_marginEnd="8dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Phone Calls"
+                                android:fontFamily="@font/montserrat_semibold"
+                                android:textColor="@color/text_on_dark"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/tv_perm_call_status"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Auto-call contacts during emergency"
+                                android:fontFamily="@font/montserrat"
+                                android:textColor="@color/slate_grey"
+                                android:textSize="11sp"
+                                android:layout_marginTop="2dp" />
+
+                        </LinearLayout>
+
+                        <Switch
+                            android:id="@+id/switch_perm_call"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:thumb="@drawable/switch_thumb"
+                            android:track="@drawable/switch_track"
+                            android:enabled="false"
+                            android:checked="false" />
+
+                    </LinearLayout>
+
+                    <!-- Tap to grant hint -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Tap a disabled permission to open system settings and grant access."
+                        android:fontFamily="@font/montserrat"
+                        android:textColor="@color/slate_grey"
+                        android:textSize="11sp"
+                        android:lineSpacingExtra="2dp"
+                        android:paddingHorizontal="12dp"
+                        android:paddingBottom="12dp"
+                        android:paddingTop="8dp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- ===== APP SETTINGS SECTION ===== -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="APP SETTINGS"
                 android:fontFamily="@font/montserrat_bold"
                 android:textColor="@color/slate_grey"
-                android:textSize="12sp"
-                android:letterSpacing="0.1"
-                android:layout_marginBottom="12dp" />
+                android:textSize="11sp"
+                android:letterSpacing="0.12"
+                android:layout_marginBottom="14dp" />
 
             <!-- Emergency Contacts -->
             <androidx.cardview.widget.CardView
@@ -243,7 +1025,7 @@
                 app:cardBackgroundColor="#1A2332"
                 app:cardElevation="0dp"
                 app:cardCornerRadius="12dp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="10dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackground">
@@ -255,11 +1037,21 @@
                     android:padding="16dp"
                     android:gravity="center_vertical">
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_contacts"
-                        app:tint="@color/slate_grey" />
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        app:cardBackgroundColor="#162030"
+                        app:cardElevation="0dp"
+                        app:cardCornerRadius="10dp">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_contacts"
+                            app:tint="@color/slate_grey" />
+
+                    </androidx.cardview.widget.CardView>
 
                     <TextView
                         android:layout_width="0dp"
@@ -269,57 +1061,11 @@
                         android:text="Emergency Contacts"
                         android:fontFamily="@font/montserrat_semibold"
                         android:textColor="@color/text_on_dark"
-                        android:textSize="15sp" />
+                        android:textSize="14sp" />
 
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_arrow_right"
-                        app:tint="@color/slate_grey" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <!-- Privacy & Permissions -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/card_privacy"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="#1A2332"
-                app:cardElevation="0dp"
-                app:cardCornerRadius="12dp"
-                android:layout_marginBottom="24dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackground">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_lock"
-                        app:tint="@color/slate_grey" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="16dp"
-                        android:text="Privacy &amp; Permissions"
-                        android:fontFamily="@font/montserrat_semibold"
-                        android:textColor="@color/text_on_dark"
-                        android:textSize="15sp" />
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
                         android:src="@drawable/ic_arrow_right"
                         app:tint="@color/slate_grey" />
 
@@ -335,7 +1081,7 @@
                 android:text="Logout from AapRaksha"
                 android:textColor="#FF4444"
                 android:fontFamily="@font/montserrat_bold"
-                android:textSize="15sp"
+                android:textSize="14sp"
                 android:textAllCaps="false"
                 android:background="@drawable/logout_button_bg"
                 android:drawableStart="@drawable/ic_logout"
@@ -345,14 +1091,15 @@
 
             <!-- Version Text -->
             <TextView
+                android:id="@+id/tv_app_version"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="AapRaksha v2.4.1 (Clean Slate Edition)"
+                android:text="AapRaksha v2.4.1"
                 android:fontFamily="@font/montserrat_regular"
                 android:textColor="@color/slate_grey"
                 android:textSize="11sp"
-                android:layout_marginBottom="20dp" />
+                android:layout_marginBottom="24dp" />
 
         </LinearLayout>
 

@@ -1,0 +1,14 @@
+{
+  "storage": {
+    "rules": "storage.rules"
+  },
+  "auth": {
+    "providers": {
+      "emailPassword": true,
+      "googleSignIn": {
+        "oAuthBrandDisplayName": "AapRaksha",
+        "supportEmail": "meetmathukiya9999@gmail.com"
+      }
+    }
+  }
+}

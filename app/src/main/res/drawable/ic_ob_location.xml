@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+
+    <!-- Map pin body -->
+    <path
+        android:pathData="M60,16 C43.4,16 30,29.4 30,46 C30,68 60,104 60,104 C60,104 90,68 90,46 C90,29.4 76.6,16 60,16Z"
+        android:fillColor="#1F7C67FA"
+        android:strokeColor="#7C67FA"
+        android:strokeWidth="2" />
+
+    <!-- Inner circle of pin -->
+    <path
+        android:pathData="M60,36 A12,12 0 1,1 59.99,36"
+        android:fillColor="#7C67FA"
+        android:strokeColor="#00000000"
+        android:strokeWidth="0" />
+
+    <!-- Inner dot -->
+    <path
+        android:pathData="M60,41 A7,7 0 1,1 59.99,41"
+        android:fillColor="#1C1C34"
+        android:strokeColor="#00000000"
+        android:strokeWidth="0" />
+
+    <!-- Signal wave 1 (top-right) -->
+    <path
+        android:pathData="M78,28 C82,24 86,20 90,16"
+        android:strokeColor="#7C67FA"
+        android:strokeWidth="2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Signal wave 2 -->
+    <path
+        android:pathData="M82,34 C86,30 92,24 96,20"
+        android:strokeColor="#607C67FA"
+        android:strokeWidth="1.8"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Signal wave 3 -->
+    <path
+        android:pathData="M86,40 C90,36 96,30 102,24"
+        android:strokeColor="#407C67FA"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Small signal dots -->
+    <path
+        android:pathData="M92,14 L92,14"
+        android:strokeColor="#7C67FA"
+        android:strokeWidth="3"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M104,22 L104,22"
+        android:strokeColor="#407C67FA"
+        android:strokeWidth="2.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+</vector>

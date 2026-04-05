@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/deep_midnight">
+
+    <!-- Top Navigation Bar -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:paddingHorizontal="16dp"
+        android:background="@color/deep_midnight">
+
+        <ImageButton
+            android:id="@+id/back_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/rounded_field_dark"
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="Back"
+            android:padding="10dp"
+            android:scaleType="centerInside"
+            app:tint="@color/text_on_dark" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Alert Timeline"
+            android:textSize="18sp"
+            android:fontFamily="@font/montserrat_bold"
+            android:textColor="@color/text_on_dark" />
+
+        <ImageButton
+            android:id="@+id/share_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/rounded_field_dark"
+            android:src="@drawable/ic_arrow_forward"
+            android:rotation="315"
+            android:contentDescription="Share"
+            android:padding="10dp"
+            android:scaleType="centerInside"
+            app:tint="@color/electric_indigo_light" />
+
+    </RelativeLayout>
+
+    <!-- Loading Progress Bar -->
+    <ProgressBar
+        android:id="@+id/loading_progress"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:visibility="gone"
+        android:indeterminate="true"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:progressTint="@color/electric_indigo" />
+
+    <!-- Scrollable Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:overScrollMode="never">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="24dp">
+
+            <!-- Map View Section -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="280dp"
+                android:layout_margin="16dp">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:cardCornerRadius="24dp"
+                    app:cardElevation="8dp"
+                    app:cardBackgroundColor="@color/surface_dark">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:id="@+id/map_preview"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/ic_launcher_background"
+                            android:contentDescription="Map preview" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bottom_to_top_gradient_dark" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom"
+                            android:orientation="vertical"
+                            android:paddingHorizontal="20dp"
+                            android:paddingVertical="16dp">
+
+                            <TextView
+                                android:id="@+id/location_address"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="---"
+                                android:textSize="17sp"
+                                android:fontFamily="@font/montserrat_bold"
+                                android:textColor="@color/text_on_dark"
+                                android:maxLines="2"
+                                android:ellipsize="end" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_marginTop="6dp"
+                                android:gravity="center_vertical">
+
+                                <ImageView
+                                    android:layout_width="14dp"
+                                    android:layout_height="14dp"
+                                    android:src="@drawable/ic_location"
+                                    app:tint="@color/electric_indigo_light" />
+
+                                <TextView
+                                    android:id="@+id/location_coordinates"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Lat: ---, Lng: ---"
+                                    android:textSize="12sp"
+                                    android:fontFamily="@font/montserrat"
+                                    android:textColor="@color/electric_indigo_light"
+                                    android:layout_marginStart="6dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text=" • "
+                                    android:textColor="@color/slate_grey" />
+
+                                <TextView
+                                    android:id="@+id/location_accuracy"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="---"
+                                    android:textSize="12sp"
+                                    android:fontFamily="@font/montserrat"
+                                    android:textColor="@color/slate_grey" />
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </FrameLayout>
+                </androidx.cardview.widget.CardView>
+            </FrameLayout>
+
+            <!-- User Info Header -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="24dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_glass_panel"
+                    android:padding="20dp">
+
+                    <FrameLayout
+                        android:layout_width="64dp"
+                        android:layout_height="64dp">
+                        <ImageView
+                            android:id="@+id/user_photo"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/ic_profile"
+                            android:background="@drawable/rounded_field_dark"
+                            android:padding="1dp"
+                            android:scaleType="centerCrop" />
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/button_outlined_background" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="16dp">
+
+                        <TextView
+                            android:id="@+id/alert_type"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="EMERGENCY ALERT"
+                            android:textSize="10sp"
+                            android:fontFamily="@font/montserrat_bold"
+                            android:textColor="@color/electric_indigo_light"
+                            android:letterSpacing="0.1"
+                            android:textAllCaps="true" />
+
+                        <TextView
+                            android:id="@+id/user_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="---"
+                            android:textSize="20sp"
+                            android:fontFamily="@font/montserrat_bold"
+                            android:textColor="@color/text_on_dark"
+                            android:layout_marginTop="2dp" />
+
+                        <TextView
+                            android:id="@+id/alert_timestamp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="---"
+                            android:textSize="13sp"
+                            android:fontFamily="@font/montserrat"
+                            android:textColor="@color/slate_grey"
+                            android:layout_marginTop="4dp" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/alert_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ACTIVE"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:letterSpacing="0.05"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"
+                        android:background="@drawable/status_badge_background"
+                        android:textColor="@color/sos_red" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Contact Responses Section Header -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="16dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="Response Timeline"
+                    android:textSize="17sp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:textColor="@color/text_on_dark" />
+
+                <View
+                    android:layout_width="40dp"
+                    android:layout_height="1dp"
+                    android:background="@color/slate_grey"
+                    android:alpha="0.3"
+                    android:layout_marginHorizontal="8dp" />
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/contact_responses_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="16dp"
+                android:nestedScrollingEnabled="false"
+                android:clipToPadding="false"
+                android:overScrollMode="never" />
+
+            <TextView
+                android:id="@+id/no_responses_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="48dp"
+                android:text="No responses recorded yet"
+                android:gravity="center"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/slate_grey"
+                android:visibility="gone" />
+
+            <!-- Spacer -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="32dp" />
+
+            <!-- Action Buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_call_emergency"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:text="Call SOS Contact"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:background="@drawable/bg_button_emergency"
+                    android:elevation="4dp"
+                    android:layout_marginBottom="12dp" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_navigate"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:text="Start Navigation"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:background="@drawable/bg_button_primary"
+                    android:elevation="4dp" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

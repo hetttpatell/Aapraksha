@@ -16,18 +16,27 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.ContactsContract;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EmergencyContactsActivity extends AppCompatActivity {
+public class EmergencyContactsActivity extends BaseActivity {
 
     private LinearLayout contactsContainer;
     private LinearLayout priorityContactContainer;
     private FloatingActionButton fabAddContact;
     private List<EmergencyContact> contacts;
     private EmergencyContact priorityContact;
+    private ActivityResultLauncher<Intent> contactPickerLauncher;
+    private EditText currentEditName;
+    private EditText currentEditPhone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +62,46 @@ public class EmergencyContactsActivity extends AppCompatActivity {
         if (navHome != null) {
             navHome.setOnClickListener(v -> finish());
         }
+
+        // Initialize Contact Picker
+        contactPickerLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Uri contactUri = result.getData().getData();
+                    extractContactDetails(contactUri);
+                }
+            }
+        );
     }
     
+    private void extractContactDetails(Uri contactUri) {
+        String[] projection = new String[]{
+                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+                ContactsContract.CommonDataKinds.Phone.NUMBER
+        };
+
+        try (Cursor cursor = getContentResolver().query(contactUri, projection, null, null, null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                int nameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+                int phoneIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+
+                if (nameIndex != -1 && phoneIndex != -1) {
+                    String name = cursor.getString(nameIndex);
+                    String phone = cursor.getString(phoneIndex);
+                    
+                    if (currentEditName != null && currentEditPhone != null) {
+                        currentEditName.setText(name != null ? name : "");
+                        currentEditPhone.setText(phone != null ? phone.replaceAll("[^0-9+]", "") : "");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, "Failed to read contact", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -115,6 +162,16 @@ public class EmergencyContactsActivity extends AppCompatActivity {
         CheckBox checkboxPriority = dialogView.findViewById(R.id.checkbox_priority);
         Button btnSave = dialogView.findViewById(R.id.btn_save_contact);
         Button btnCancel = dialogView.findViewById(R.id.btn_cancel);
+        Button btnImportContact = dialogView.findViewById(R.id.btn_import_contact);
+
+        if (btnImportContact != null) {
+            btnImportContact.setOnClickListener(v -> {
+                currentEditName = editName;
+                currentEditPhone = editPhone;
+                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+                contactPickerLauncher.launch(intent);
+            });
+        }
 
         // Get current user's phone for validation
         FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -250,7 +307,17 @@ public class EmergencyContactsActivity extends AppCompatActivity {
         CheckBox checkboxPriority = dialogView.findViewById(R.id.checkbox_priority);
         Button btnSave = dialogView.findViewById(R.id.btn_save_contact);
         Button btnCancel = dialogView.findViewById(R.id.btn_cancel);
+        Button btnImportContact = dialogView.findViewById(R.id.btn_import_contact);
         TextView dialogTitle = dialogView.findViewById(R.id.dialog_title);
+
+        if (btnImportContact != null) {
+            btnImportContact.setOnClickListener(v -> {
+                currentEditName = editName;
+                currentEditPhone = editPhone;
+                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+                contactPickerLauncher.launch(intent);
+            });
+        }
 
         dialogTitle.setText("Edit Contact");
         editName.setText(contact.getName());

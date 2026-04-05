@@ -6,7 +6,6 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.WriteBatch;
-import com.example.aapraksha.models.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -105,7 +104,7 @@ public class UserRepository {
         emptyContact.put("placeholder", true); // Temporary placeholder
         
         batch.set(db.collection("users").document(userId)
-            .collection("emergency_contacts").document("_init"), emptyContact);
+            .collection("emergencyContacts").document("_init"), emptyContact);
     }
 
     /**
@@ -207,7 +206,7 @@ public class UserRepository {
         String contactId = isPriority ? "priority_contact" : "contact_" + System.currentTimeMillis();
         
         db.collection("users").document(userId)
-            .collection("emergency_contacts").document(contactId)
+            .collection("emergencyContacts").document(contactId)
             .set(contact)
             .addOnSuccessListener(aVoid -> {
                 Log.d(TAG, "Emergency contact added: " + contactId);
@@ -289,6 +288,30 @@ public class UserRepository {
             });
     }
 
+    /**
+     * Check if user has any emergency contacts
+     */
+    public void checkHasEmergencyContacts(String userId, OnContactCheckListener listener) {
+        db.collection("users").document(userId).collection("emergencyContacts").get()
+            .addOnSuccessListener(queryDocumentSnapshots -> {
+                boolean hasContacts = false;
+                for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
+                    if (!doc.getId().equals("_init") && doc.exists()) {
+                        hasContacts = true;
+                        break;
+                    }
+                }
+                if (listener != null) {
+                    listener.onCheckComplete(hasContacts);
+                }
+            })
+            .addOnFailureListener(e -> {
+                if (listener != null) {
+                    listener.onError(e.getMessage());
+                }
+            });
+    }
+
     // ========== Callback Interfaces ==========
 
     public interface OnCompleteListener {
@@ -301,6 +324,11 @@ public class UserRepository {
 
     public interface OnUserFetchListener {
         void onSuccess(User user);
+        void onError(String errorMessage);
+    }
+
+    public interface OnContactCheckListener {
+        void onCheckComplete(boolean hasContacts);
         void onError(String errorMessage);
     }
 }

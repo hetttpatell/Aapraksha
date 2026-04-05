@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_ob_gradient"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingStart="28dp"
+    android:paddingEnd="28dp">
+
+    <!-- Top spacer to push content down -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.8" />
+
+    <!-- Step Chip Badge: "Step X of 4" -->
+    <TextView
+        android:id="@+id/textStepChip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_ob_chip_indigo"
+        android:fontFamily="@font/montserrat_medium"
+        android:letterSpacing="0.04"
+        android:paddingStart="14dp"
+        android:paddingTop="5dp"
+        android:paddingEnd="14dp"
+        android:paddingBottom="5dp"
+        android:textAllCaps="false"
+        android:textColor="@color/ob_primary"
+        android:textSize="11sp"
+        tools:text="Step 1 of 4" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="28dp" />
+
+    <!-- Icon Container (Squircle) -->
+    <FrameLayout
+        android:id="@+id/iconContainer"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:background="@drawable/bg_ob_icon_container_indigo">
+
+        <ImageView
+            android:id="@+id/imageSlideIcon"
+            android:layout_width="88dp"
+            android:layout_height="88dp"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            tools:src="@drawable/ic_ob_sos" />
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="32dp" />
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/textSlideTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_extrabold"
+        android:gravity="center"
+        android:lineSpacingExtra="2dp"
+        android:textColor="@color/ob_text_primary"
+        android:textSize="22sp"
+        tools:text="One Tap Away From Safety" />
+
+    <!-- Thin Divider -->
+    <View
+        android:id="@+id/dividerLine"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@color/ob_divider" />
+
+    <!-- Body Description -->
+    <TextView
+        android:id="@+id/textSlideDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_regular"
+        android:gravity="center"
+        android:lineSpacingExtra="5dp"
+        android:textColor="@color/ob_text_secondary"
+        android:textSize="14sp"
+        tools:text="Tap the SOS button in-app or hold the volume key for 3 seconds. No unlocking. No delay. Help is triggered the instant you need it." />
+
+    <!-- Bottom spacer -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+</LinearLayout>

@@ -118,12 +118,15 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void goToMain() {
-        // Check if user is logged in
         if (auth.getCurrentUser() != null) {
-            // User is logged in, go to Dashboard
-            startActivity(new Intent(this, DashboardActivity.class));
+            android.content.SharedPreferences prefs = getSharedPreferences("AaprakshaPrefs", MODE_PRIVATE);
+            boolean hasSeenOnboarding = prefs.getBoolean("hasSeenOnboarding", false);
+            if (hasSeenOnboarding) {
+                startActivity(new Intent(this, DashboardActivity.class));
+            } else {
+                startActivity(new Intent(this, OnboardingActivity.class));
+            }
         } else {
-            // User is not logged in, go to Login
             startActivity(new Intent(this, LoginActivity.class));
         }
         overridePendingTransition(R.anim.main_enter, R.anim.splash_exit);

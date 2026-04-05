@@ -25,6 +25,18 @@
             android:textSize="20sp"
             android:layout_marginBottom="20dp" />
 
+        <Button
+            android:id="@+id/btn_import_contact"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Import from Contacts"
+            android:fontFamily="@font/montserrat_bold"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            android:background="@drawable/rounded_field_dark"
+            android:layout_marginBottom="20dp" />
+
         <!-- Name Field -->
         <TextView
             android:layout_width="wrap_content"

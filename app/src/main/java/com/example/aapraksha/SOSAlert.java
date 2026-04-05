@@ -2,9 +2,11 @@ package com.example.aapraksha;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.PropertyName;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * SOSAlert model for Firestore 'sos_alerts' collection
@@ -19,7 +21,13 @@ public class SOSAlert implements Serializable {
     
     // Status tracking
     private String status; // TRIGGERED, ACTIVE, CANCELLED, RESOLVED, EXPIRED
+    private String alertType; // SOS, CHECK_IN, MANUAL
     private SOSData sosData;
+    
+    // Direct Firestore flat timestamp fields
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
+    private Timestamp cancelledAt;
     
     // Location information
     private LocationData location;
@@ -28,7 +36,13 @@ public class SOSAlert implements Serializable {
     private String alertMessage;
     private AlertDetails alertDetails;
     
-    // Notifications sent
+    // Firestore flat field for device info (stored as Map)
+    private Map<String, Object> deviceInfo;
+    
+    // Firestore flat field for notifications (stored as List of Maps)
+    private List<Object> notificationsToContacts;
+    
+    // Notifications sent (structured)
     private NotificationData notifications;
     
     // Contact responses
@@ -36,7 +50,6 @@ public class SOSAlert implements Serializable {
     
     // Media attachments
     private List<MediaData> media;
-    private VoiceRecording voiceRecording;
     
     // Cancellation info
     private CancellationData cancellation;
@@ -44,6 +57,12 @@ public class SOSAlert implements Serializable {
     // Visibility & metadata
     private String visibility; // PRIVATE, CONTACTS_ONLY, PUBLIC
     private MetadataInfo metadata;
+    
+    // Audio recording data (separate from location)
+    private Map<String, Object> audioData;
+    
+    // SOS status metadata (trigger count, visibility, etc.)
+    private Map<String, Object> sosStatus;
 
     public SOSAlert() {
         this.sosData = new SOSData();
@@ -52,12 +71,12 @@ public class SOSAlert implements Serializable {
         this.notifications = new NotificationData();
         this.responses = new ArrayList<>();
         this.media = new ArrayList<>();
-        this.voiceRecording = new VoiceRecording();
         this.cancellation = new CancellationData();
         this.metadata = new MetadataInfo();
     }
 
     // ========== Getters & Setters ==========
+
     public String getAlertId() { return alertId; }
     public void setAlertId(String alertId) { this.alertId = alertId; }
 
@@ -73,8 +92,20 @@ public class SOSAlert implements Serializable {
     public String getUserProfilePhoto() { return userProfilePhoto; }
     public void setUserProfilePhoto(String userProfilePhoto) { this.userProfilePhoto = userProfilePhoto; }
 
+    @PropertyName("status")
     public String getStatus() { return status; }
+    
+    @PropertyName("status")
     public void setStatus(String status) { this.status = status; }
+
+    @PropertyName("type")
+    public String getAlertType() {
+        return alertType;
+    }
+    
+    @PropertyName("type")
+    public void setAlertType(String alertType) { this.alertType = alertType; }
+    
 
     public SOSData getSosData() { return sosData; }
     public void setSosData(SOSData sosData) { this.sosData = sosData; }
@@ -97,9 +128,6 @@ public class SOSAlert implements Serializable {
     public List<MediaData> getMedia() { return media; }
     public void setMedia(List<MediaData> media) { this.media = media; }
 
-    public VoiceRecording getVoiceRecording() { return voiceRecording; }
-    public void setVoiceRecording(VoiceRecording voiceRecording) { this.voiceRecording = voiceRecording; }
-
     public CancellationData getCancellation() { return cancellation; }
     public void setCancellation(CancellationData cancellation) { this.cancellation = cancellation; }
 
@@ -108,6 +136,133 @@ public class SOSAlert implements Serializable {
 
     public MetadataInfo getMetadata() { return metadata; }
     public void setMetadata(MetadataInfo metadata) { this.metadata = metadata; }
+    
+    public Map<String, Object> getAudioData() { return audioData; }
+    public void setAudioData(Map<String, Object> audioData) { this.audioData = audioData; }
+
+    // ========== Additional Getters for Compatibility ==========
+    
+    /**
+     * Get creation timestamp - checks direct field first (Firestore flat),
+     * then falls back to sosData.triggeredAt (structured model)
+     */
+    public Timestamp getCreatedAt() {
+        if (createdAt != null) return createdAt;
+        return sosData != null ? sosData.getTriggeredAt() : null;
+    }
+
+    /**
+     * Set creation timestamp
+     */
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+        if (sosData == null) {
+            sosData = new SOSData();
+        }
+        sosData.setTriggeredAt(createdAt);
+    }
+    
+    public Timestamp getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(Timestamp updatedAt) { this.updatedAt = updatedAt; }
+    
+    public Timestamp getCancelledAt() { return cancelledAt; }
+    public void setCancelledAt(Timestamp cancelledAt) { this.cancelledAt = cancelledAt; }
+
+    /**
+     * Get device information - checks flat Map first (Firestore), then alertDetails
+     */
+    public Map<String, Object> getDeviceInfo() {
+        return deviceInfo;
+    }
+    
+    /**
+     * Set device information from Firestore flat Map
+     */
+    public void setDeviceInfo(Map<String, Object> deviceInfo) {
+        this.deviceInfo = deviceInfo;
+    }
+    
+    /**
+     * Get structured device info from the flat Map
+     */
+    public AlertDetails getDeviceInfoAsDetails() {
+        if (deviceInfo != null) {
+            AlertDetails details = new AlertDetails();
+            Object battery = deviceInfo.get("batteryLevel");
+            if (battery instanceof Number) details.setBatteryLevel(((Number) battery).intValue());
+            Object network = deviceInfo.get("networkType");
+            if (network instanceof String) details.setNetworkType((String) network);
+            Object signal = deviceInfo.get("signalStrength");
+            if (signal instanceof Number) details.setSignalStrength(((Number) signal).intValue());
+            return details;
+        }
+        return alertDetails;
+    }
+
+    /**
+     * Get notifications to contacts as list.
+     * Checks direct Firestore flat field first, then structured notifications.
+     */
+    public List<Object> getNotificationsToContacts() {
+        if (notificationsToContacts != null && !notificationsToContacts.isEmpty()) {
+            return notificationsToContacts;
+        }
+        if (notifications != null && notifications.getContactsNotifiedList() != null) {
+            return new ArrayList<>(notifications.getContactsNotifiedList());
+        }
+        return new ArrayList<>();
+    }
+
+    /**
+     * Set notifications to contacts
+     */
+    public void setNotificationsToContacts(List<Object> notificationsList) {
+        this.notificationsToContacts = notificationsList;
+    }
+
+    /**
+     * Get user-friendly status display text.
+     * CANCELLED / RESOLVED / EXPIRED = "Inactive", everything else = "Active"
+     */
+    public String getStatusDisplayText() {
+        if (status == null) return "Active";
+        switch (status) {
+            case "CANCELLED":
+            case "RESOLVED":
+            case "EXPIRED":
+                return "Inactive";
+            default:
+                return "Active";
+        }
+    }
+
+    /**
+     * Check if alert is currently active
+     */
+    public boolean isActive() {
+        return "ACTIVE".equals(status) || "TRIGGERED".equals(status);
+    }
+
+    public Map<String, Object> getSosStatus() {
+        return sosStatus;
+    }
+
+    public void setSosStatus(Map<String, Object> sosStatus) {
+        this.sosStatus = sosStatus;
+    }
+
+    /**
+     * Get the total number of SOS alerts triggered for this alert session or user
+     */
+    public int getNumberOfSOSTriggered() {
+        if (sosStatus != null && sosStatus.containsKey("numberOfSOSTriggered")) {
+            Object count = sosStatus.get("numberOfSOSTriggered");
+            if (count instanceof Number) {
+                return ((Number) count).intValue();
+            }
+        }
+        return 0;
+    }
 
     // ========== Inner Classes ==========
 
@@ -208,7 +363,7 @@ public class SOSAlert implements Serializable {
 
     public static class NotificationData implements Serializable {
         private int totalContactsNotified;
-        private List<String> contactsNotifiedList;
+        private List<Object> contactsNotifiedList;
         private int audioCount;
         private int smsCount;
         private int callCount;
@@ -224,8 +379,8 @@ public class SOSAlert implements Serializable {
         public int getTotalContactsNotified() { return totalContactsNotified; }
         public void setTotalContactsNotified(int totalContactsNotified) { this.totalContactsNotified = totalContactsNotified; }
 
-        public List<String> getContactsNotifiedList() { return contactsNotifiedList; }
-        public void setContactsNotifiedList(List<String> contactsNotifiedList) { this.contactsNotifiedList = contactsNotifiedList; }
+        public List<Object> getContactsNotifiedList() { return contactsNotifiedList; }
+        public void setContactsNotifiedList(List<Object> contactsNotifiedList) { this.contactsNotifiedList = contactsNotifiedList; }
 
         public int getAudioCount() { return audioCount; }
         public void setAudioCount(int audioCount) { this.audioCount = audioCount; }
@@ -320,26 +475,6 @@ public class SOSAlert implements Serializable {
         public void setDuration(int duration) { this.duration = duration; }
     }
 
-    public static class VoiceRecording implements Serializable {
-        private String url;
-        private int duration; // seconds
-        private Timestamp recordedAt;
-        private String transcription;
-
-        public VoiceRecording() {}
-
-        public String getUrl() { return url; }
-        public void setUrl(String url) { this.url = url; }
-
-        public int getDuration() { return duration; }
-        public void setDuration(int duration) { this.duration = duration; }
-
-        public Timestamp getRecordedAt() { return recordedAt; }
-        public void setRecordedAt(Timestamp recordedAt) { this.recordedAt = recordedAt; }
-
-        public String getTranscription() { return transcription; }
-        public void setTranscription(String transcription) { this.transcription = transcription; }
-    }
 
     public static class CancellationData implements Serializable {
         private String status; // SELF_CANCELLED, PIN_REQUIRED, AUTO_CANCELLED
@@ -371,7 +506,7 @@ public class SOSAlert implements Serializable {
     }
 
     public static class MetadataInfo implements Serializable {
-        private String triggeredFrom; // BUTTON, VOLUME_KEY, VOICE, MANUAL
+        private String triggeredFrom; // BUTTON, VOLUME_KEY, MANUAL
         private boolean testMode;
         private String notes;
 

@@ -44,6 +44,10 @@ dependencies {
     implementation libs.gms.location
     implementation libs.gms.auth
     
+    // Glide
+    implementation libs.glide
+    annotationProcessor libs.glide.compiler
+    
     // Firebase
     implementation platform(libs.firebase.bom)
     implementation libs.firebase.crashlytics
@@ -52,6 +56,7 @@ dependencies {
     implementation libs.firebase.database
     implementation libs.firebase.firestore
     implementation libs.firebase.firestore.core
+    implementation libs.firebase.storage
     
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit

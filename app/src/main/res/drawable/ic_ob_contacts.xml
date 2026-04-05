@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+
+    <!-- Left person avatar circle -->
+    <path
+        android:pathData="M30,50 A14,14 0 1,1 29.99,50"
+        android:fillColor="#1F7C67FA"
+        android:strokeColor="#7C67FA"
+        android:strokeWidth="1.5" />
+    <!-- Left person head -->
+    <path
+        android:pathData="M30,44 A5,5 0 1,1 29.99,44"
+        android:fillColor="#7C67FA"
+        android:strokeColor="#00000000"
+        android:strokeWidth="0" />
+    <!-- Left person body -->
+    <path
+        android:pathData="M24,58 C24,53 36,53 36,58"
+        android:fillColor="#7C67FA"
+        android:strokeColor="#00000000"
+        android:strokeWidth="0" />
+
+    <!-- Center person avatar circle (slightly larger) -->
+    <path
+        android:pathData="M60,42 A16,16 0 1,1 59.99,42"
+        android:fillColor="#1F7C67FA"
+        android:strokeColor="#7C67FA"
+        android:strokeWidth="1.8" />
+    <!-- Center person head -->
+    <path
+        android:pathData="M60,35 A6,6 0 1,1 59.99,35"
+        android:fillColor="#7C67FA"
+        android:strokeColor="#00000000"
+        android:strokeWidth="0" />
+    <!-- Center person body -->
+    <path
+        android:pathData="M52,52 C52,46 68,46 68,52"
+        android:fillColor="#7C67FA"
+        android:strokeColor="#00000000"
+        android:strokeWidth="0" />
+
+    <!-- Right person avatar circle -->
+    <path
+        android:pathData="M90,50 A14,14 0 1,1 89.99,50"
+        android:fillColor="#1F7C67FA"
+        android:strokeColor="#7C67FA"
+        android:strokeWidth="1.5" />
+    <!-- Right person head -->
+    <path
+        android:pathData="M90,44 A5,5 0 1,1 89.99,44"
+        android:fillColor="#7C67FA"
+        android:strokeColor="#00000000"
+        android:strokeWidth="0" />
+    <!-- Right person body -->
+    <path
+        android:pathData="M84,58 C84,53 96,53 96,58"
+        android:fillColor="#7C67FA"
+        android:strokeColor="#00000000"
+        android:strokeWidth="0" />
+
+    <!-- Connection lines between avatars -->
+    <path
+        android:pathData="M44,50 L46,50"
+        android:strokeColor="#407C67FA"
+        android:strokeWidth="1.2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M74,50 L76,50"
+        android:strokeColor="#407C67FA"
+        android:strokeWidth="1.2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Checkmark badge circle (top-right of center avatar) -->
+    <path
+        android:pathData="M74,30 A10,10 0 1,1 73.99,30"
+        android:fillColor="#7C67FA"
+        android:strokeColor="#1C1C34"
+        android:strokeWidth="2" />
+    <!-- Checkmark inside badge -->
+    <path
+        android:pathData="M70,30 L73,33 L79,27"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+
+    <!-- Connection arc left to center -->
+    <path
+        android:pathData="M42,55 Q51,70 56,58"
+        android:strokeColor="#307C67FA"
+        android:strokeWidth="1"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Connection arc right to center -->
+    <path
+        android:pathData="M78,55 Q69,70 64,58"
+        android:strokeColor="#307C67FA"
+        android:strokeWidth="1"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+</vector>

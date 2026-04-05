@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="8dp"
+    android:backgroundTint="@color/surface_dark">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="24dp">
+
+        <ImageView
+            android:id="@+id/iv_lock_icon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_lock"
+            app:tint="@color/electric_indigo"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_dialog_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Emergency PIN"
+            android:textSize="20sp"
+            android:fontFamily="@font/montserrat_bold"
+            android:textColor="@color/text_on_dark"
+            app:layout_constraintTop_toBottomOf="@id/iv_lock_icon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_dialog_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Enter your 4-digit PIN to safely cancel the active SOS alert."
+            android:textSize="14sp"
+            android:fontFamily="@font/montserrat_regular"
+            android:textColor="@color/slate_grey"
+            android:textAlignment="center"
+            app:layout_constraintTop_toBottomOf="@id/tv_dialog_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Emergency PIN Input -->
+        <LinearLayout
+            android:id="@+id/ll_pin_input"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal"
+            android:background="@drawable/bg_login_input"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_dialog_message"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <EditText
+                android:id="@+id/et_emergency_pin"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:fontFamily="@font/montserrat_semibold"
+                android:hint="••••"
+                android:maxLines="1"
+                android:letterSpacing="0.3"
+                android:textAlignment="center"
+                android:textColorHint="@color/slate_grey"
+                android:textColor="@color/text_on_dark"
+                android:textSize="22sp"
+                android:inputType="numberPassword"
+                android:maxLength="4"
+                android:paddingVertical="0dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            app:layout_constraintTop_toBottomOf="@id/ll_pin_input"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                android:id="@+id/btn_cancel"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="0.4"
+                android:text="Cancel"
+                android:gravity="center"
+                android:fontFamily="@font/montserrat_semibold"
+                android:textColor="@color/slate_grey"
+                android:textSize="16sp"
+                android:background="?attr/selectableItemBackground" />
+                
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_verify"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="0.6"
+                android:text="Verify PIN"
+                android:fontFamily="@font/montserrat_semibold"
+                android:textColor="@color/text_on_primary"
+                android:textSize="15sp"
+                android:textAllCaps="false"
+                android:background="@drawable/bg_button_login" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

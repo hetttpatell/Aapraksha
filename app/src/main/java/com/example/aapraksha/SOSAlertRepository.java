@@ -7,8 +7,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.WriteBatch;
-import com.example.aapraksha.models.User;
+import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,6 +41,16 @@ public class SOSAlertRepository {
 
     public interface OnEmergencyContactsListener {
         void onSuccess(List<EmergencyContact> contacts);
+        void onError(String errorMessage);
+    }
+
+    public interface OnAlertsListFetchListener {
+        void onSuccess(List<SOSAlert> alerts);
+        void onError(String errorMessage);
+    }
+
+    public interface OnRealtimeAlertsListener {
+        void onAlertsUpdated(List<SOSAlert> alerts);
         void onError(String errorMessage);
     }
 
@@ -145,7 +154,6 @@ public class SOSAlertRepository {
 
             // Additional fields
             alertData.put("mediaAttachments", new ArrayList<>()); // Images/videos
-            alertData.put("voiceRecording", null);
             alertData.put("notes", "");
             alertData.put("tags", new ArrayList<>()); // User-added tags
 
@@ -262,7 +270,10 @@ public class SOSAlertRepository {
                             listener.onError("No active SOS alert");
                         } else {
                             SOSAlert alert = querySnapshot.getDocuments().get(0).toObject(SOSAlert.class);
-                            Log.d(TAG, "Active SOS fetched: " + alert.getAlertId());
+                            if (alert != null && alert.getAlertId() == null) {
+                                alert.setAlertId(querySnapshot.getDocuments().get(0).getId());
+                            }
+                            Log.d(TAG, "Active SOS fetched: " + (alert != null ? alert.getAlertId() : "null"));
                             listener.onSuccess(alert);
                         }
                     })
@@ -277,7 +288,7 @@ public class SOSAlertRepository {
     }
 
     private void getEmergencyContacts(String userId, OnEmergencyContactsListener listener) {
-        db.collection("users").document(userId).collection("emergency_contacts")
+        db.collection("users").document(userId).collection("emergencyContacts")
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     List<EmergencyContact> contacts = new ArrayList<>();
@@ -305,4 +316,341 @@ public class SOSAlertRepository {
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "User SOS status updated"))
                 .addOnFailureListener(e -> Log.e(TAG, "Failed to update user SOS status: " + e.getMessage()));
     }
+
+    /**
+     * Fetch live alerts from other users (excluding current user)
+     * Returns alerts with ACTIVE or TRIGGERED status
+     */
+    public void fetchLiveAlerts(OnAlertsListFetchListener listener) {
+        String currentUserId = auth.getCurrentUser().getUid();
+        try {
+            db.collection("alerts")
+                    .whereIn("status", java.util.Arrays.asList("ACTIVE", "TRIGGERED"))
+                    .limit(50)
+                    .get()
+                    .addOnSuccessListener(querySnapshot -> {
+                        List<SOSAlert> alerts = new ArrayList<>();
+                        for (com.google.firebase.firestore.DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                            SOSAlert alert = doc.toObject(SOSAlert.class);
+                            if (alert != null) {
+                                if (alert.getAlertId() == null) alert.setAlertId(doc.getId());
+                                if (!currentUserId.equals(alert.getUserId())) {
+                                    alerts.add(alert);
+                                }
+                            }
+                        }
+                        
+                        // Sort by createdAt descending natively to bypass Firestore index requirement
+                        java.util.Collections.sort(alerts, (a1, a2) -> {
+                            if (a1.getCreatedAt() == null || a2.getCreatedAt() == null) return 0;
+                            return a2.getCreatedAt().compareTo(a1.getCreatedAt());
+                        });
+
+                        Log.d(TAG, "Live alerts fetched: " + alerts.size());
+                        listener.onSuccess(alerts);
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e(TAG, "Failed to fetch live alerts: " + e.getMessage());
+                        listener.onError(e.getMessage());
+                    });
+        } catch (Exception e) {
+            Log.e(TAG, "Error fetching live alerts: " + e.getMessage());
+            listener.onError(e.getMessage());
+        }
+    }
+
+    /**
+     * Fetch user's own SOS alert history
+     */
+    public void fetchUserAlerts(String userId, int limit, OnAlertsListFetchListener listener) {
+        try {
+            db.collection("alerts")
+                    .whereEqualTo("userId", userId)
+                    .orderBy("sosData.triggeredAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                    .limit(limit)
+                    .get()
+                    .addOnSuccessListener(querySnapshot -> {
+                        List<SOSAlert> alerts = new ArrayList<>();
+                        for (com.google.firebase.firestore.DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                            SOSAlert alert = doc.toObject(SOSAlert.class);
+                            if (alert != null) {
+                                if (alert.getAlertId() == null) alert.setAlertId(doc.getId());
+                                alerts.add(alert);
+                            }
+                        }
+                        Log.d(TAG, "User alerts fetched from alerts: " + alerts.size());
+                        listener.onSuccess(alerts);
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e(TAG, "Failed to fetch user alerts: " + e.getMessage());
+                        // If index is missing, fallback to client side sorting
+                        if (e.getMessage() != null && e.getMessage().contains("FAILED_PRECONDITION")) {
+                           Log.d(TAG, "Index missing, falling back to client-side sort");
+                           fetchUserAlertsWithoutOrder(userId, limit, listener);
+                        } else {
+                           listener.onError(e.getMessage());
+                        }
+                    });
+        } catch (Exception e) {
+            Log.e(TAG, "Error fetching user alerts: " + e.getMessage());
+            listener.onError(e.getMessage());
+        }
+    }
+
+    private void fetchUserAlertsWithoutOrder(String userId, int limit, OnAlertsListFetchListener listener) {
+        db.collection("alerts")
+                .whereEqualTo("userId", userId)
+                .limit(limit)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<SOSAlert> alerts = new ArrayList<>();
+                    for (com.google.firebase.firestore.DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                        SOSAlert alert = doc.toObject(SOSAlert.class);
+                        if (alert != null) {
+                            if (alert.getAlertId() == null) alert.setAlertId(doc.getId());
+                            alerts.add(alert);
+                        }
+                    }
+                    java.util.Collections.sort(alerts, (a1, a2) -> {
+                        if (a1.getCreatedAt() == null || a2.getCreatedAt() == null) return 0;
+                        return a2.getCreatedAt().compareTo(a1.getCreatedAt());
+                    });
+                    listener.onSuccess(alerts);
+                })
+                .addOnFailureListener(e -> listener.onError(e.getMessage()));
+    }
+
+    /**
+     * Fetch alerts by status (for filtering history)
+     */
+    public void fetchAlertsByStatus(String userId, String status, OnAlertsListFetchListener listener) {
+        try {
+            db.collection("users").document(userId).collection("alert_history")
+                    .whereEqualTo("alertStatus", status)
+                    .limit(50)
+                    .get()
+                    .addOnSuccessListener(querySnapshot -> {
+                        List<SOSAlert> alerts = new ArrayList<>();
+                        for (com.google.firebase.firestore.DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                            AlertHistory history = doc.toObject(AlertHistory.class);
+                            if (history != null) {
+                                SOSAlert alert = convertAlertHistoryToSOSAlert(history);
+                                alerts.add(alert);
+                            }
+                        }
+                        
+                        // Sort by createdAt descending natively to bypass Firestore index requirement
+                        java.util.Collections.sort(alerts, (a1, a2) -> {
+                            if (a1.getCreatedAt() == null || a2.getCreatedAt() == null) return 0;
+                            return a2.getCreatedAt().compareTo(a1.getCreatedAt());
+                        });
+                        
+                        Log.d(TAG, "Filtered alerts fetched: " + alerts.size());
+                        listener.onSuccess(alerts);
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e(TAG, "Failed to fetch filtered alerts: " + e.getMessage());
+                        listener.onError(e.getMessage());
+                    });
+        } catch (Exception e) {
+            Log.e(TAG, "Error fetching filtered alerts: " + e.getMessage());
+            listener.onError(e.getMessage());
+        }
+    }
+
+    /**
+     * Fetch single alert by ID
+     */
+    public void getAlertById(String alertId, OnAlertFetchListener listener) {
+        try {
+            db.collection("alerts").document(alertId)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            SOSAlert alert = documentSnapshot.toObject(SOSAlert.class);
+                            if (alert != null && alert.getAlertId() == null) {
+                                alert.setAlertId(documentSnapshot.getId());
+                            }
+                            Log.d(TAG, "Alert fetched by ID: " + alertId);
+                            listener.onSuccess(alert);
+                        } else {
+                            listener.onError("Alert not found");
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e(TAG, "Failed to fetch alert by ID: " + e.getMessage());
+                        listener.onError(e.getMessage());
+                    });
+        } catch (Exception e) {
+            Log.e(TAG, "Error fetching alert by ID: " + e.getMessage());
+            listener.onError(e.getMessage());
+        }
+    }
+
+    /**
+     * Listen to live alerts in real-time (excluding current user)
+     * Returns ListenerRegistration to manage listener lifecycle
+     */
+    public ListenerRegistration listenToLiveAlerts(OnRealtimeAlertsListener listener) {
+        String currentUserId = auth.getCurrentUser().getUid();
+        try {
+            return db.collection("alerts")
+                    .whereIn("status", java.util.Arrays.asList("ACTIVE", "TRIGGERED"))
+                    .limit(50)
+                    .addSnapshotListener((querySnapshot, error) -> {
+                        if (error != null) {
+                            Log.e(TAG, "Error listening to live alerts: " + error.getMessage());
+                            listener.onError(error.getMessage());
+                            return;
+                        }
+
+                        if (querySnapshot != null) {
+                            List<SOSAlert> alerts = new ArrayList<>();
+                            for (com.google.firebase.firestore.DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                                SOSAlert alert = doc.toObject(SOSAlert.class);
+                                if (alert != null) {
+                                    if (alert.getAlertId() == null) alert.setAlertId(doc.getId());
+                                    if (!currentUserId.equals(alert.getUserId())) {
+                                        alerts.add(alert);
+                                    }
+                                }
+                            }
+                            
+                            // Sort by createdAt descending natively to bypass Firestore index requirement
+                            java.util.Collections.sort(alerts, (a1, a2) -> {
+                                if (a1.getCreatedAt() == null || a2.getCreatedAt() == null) return 0;
+                                return a2.getCreatedAt().compareTo(a1.getCreatedAt());
+                            });
+
+                            Log.d(TAG, "Real-time live alerts updated: " + alerts.size());
+                            listener.onAlertsUpdated(alerts);
+                        }
+                    });
+        } catch (Exception e) {
+            Log.e(TAG, "Error setting up live alerts listener: " + e.getMessage());
+            listener.onError(e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Listen to user's alert history in real-time
+     */
+    public ListenerRegistration listenToUserAlerts(String userId, OnRealtimeAlertsListener listener) {
+        try {
+            return db.collection("alerts")
+                    .whereEqualTo("userId", userId)
+                    .limit(50)
+                    .addSnapshotListener((querySnapshot, error) -> {
+                        if (error != null) {
+                            Log.e(TAG, "Error listening to user alerts: " + error.getMessage());
+                            listener.onError(error.getMessage());
+                            return;
+                        }
+
+                        if (querySnapshot != null) {
+                            List<SOSAlert> alerts = new ArrayList<>();
+                            for (com.google.firebase.firestore.DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                                SOSAlert alert = doc.toObject(SOSAlert.class);
+                                if (alert != null) {
+                                    if (alert.getAlertId() == null) alert.setAlertId(doc.getId());
+                                    alerts.add(alert);
+                                }
+                            }
+                            // Sort locally to bypass index requirement
+                            java.util.Collections.sort(alerts, (a1, a2) -> {
+                                if (a1.getCreatedAt() == null || a2.getCreatedAt() == null) return 0;
+                                return a2.getCreatedAt().compareTo(a1.getCreatedAt());
+                            });
+                            
+                            Log.d(TAG, "Real-time user alerts updated from alerts collection: " + alerts.size());
+                            listener.onAlertsUpdated(alerts);
+                        }
+                    });
+        } catch (Exception e) {
+            Log.e(TAG, "Error setting up user alerts listener: " + e.getMessage());
+            listener.onError(e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Listen to a single alert by ID in real-time
+     */
+    public ListenerRegistration listenToAlertById(String alertId, OnAlertFetchListener listener) {
+        try {
+            return db.collection("alerts").document(alertId)
+                    .addSnapshotListener((documentSnapshot, error) -> {
+                        if (error != null) {
+                            Log.e(TAG, "Error listening to alert by ID: " + error.getMessage());
+                            listener.onError(error.getMessage());
+                            return;
+                        }
+
+                        if (documentSnapshot != null && documentSnapshot.exists()) {
+                            SOSAlert alert = documentSnapshot.toObject(SOSAlert.class);
+                            if (alert != null) {
+                                if (alert.getAlertId() == null) alert.setAlertId(documentSnapshot.getId());
+                            }
+                            Log.d(TAG, "Real-time alert updated by ID: " + alertId);
+                            listener.onSuccess(alert);
+                        } else {
+                            listener.onError("Alert not found");
+                        }
+                    });
+        } catch (Exception e) {
+            Log.e(TAG, "Error setting up alert listener by ID: " + e.getMessage());
+            listener.onError(e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Convert AlertHistory to SOSAlert for consistent UI display
+     */
+    private SOSAlert convertAlertHistoryToSOSAlert(AlertHistory history) {
+        SOSAlert alert = new SOSAlert();
+        alert.setAlertId(history.getAlertId());
+        alert.setAlertType(history.getAlertType());
+        alert.setStatus(history.getAlertStatus());
+        alert.setCreatedAt(history.getTiming() != null ? history.getTiming().getTriggeredAt() : Timestamp.now());
+        
+        if (history.getLocation() != null) {
+            SOSAlert.LocationData locationData = new SOSAlert.LocationData();
+            locationData.setLatitude(history.getLocation().getLatitude());
+            locationData.setLongitude(history.getLocation().getLongitude());
+            locationData.setAddress(history.getLocation().getAddress());
+            locationData.setAccuracy(history.getLocation().getAccuracy());
+            alert.setLocation(locationData);
+        }
+
+        // Set contact info from history if available
+        if (history.getContactsNotified() != null) {
+            List<Object> notifList = new ArrayList<>();
+            if (history.getContactsNotified().getNotificationsList() != null) {
+                for (AlertHistory.ContactNotificationInfo.NotificationDetail detail : history.getContactsNotified().getNotificationsList()) {
+                    Map<String, Object> notif = new HashMap<>();
+                    notif.put("name", detail.getContactName());
+                    notif.put("phone", detail.getContactPhone());
+                    notif.put("notifiedAt", detail.getNotifiedAt());
+                    notif.put("responseStatus", detail.getResponseStatus());
+                    notifList.add(notif);
+                }
+            }
+            alert.setNotificationsToContacts(notifList);
+        }
+
+        if (history.getDeviceInfo() != null) {
+            Map<String, Object> deviceMap = new HashMap<>();
+            deviceMap.put("deviceId", history.getDeviceInfo().getDeviceId());
+            deviceMap.put("osVersion", history.getDeviceInfo().getOsVersion());
+            deviceMap.put("batteryLevel", history.getDeviceInfo().getBatteryLevel());
+            deviceMap.put("networkType", history.getDeviceInfo().getNetworkType());
+            deviceMap.put("signalStrength", history.getDeviceInfo().getSignalStrength());
+            alert.setDeviceInfo(deviceMap);
+        }
+
+        return alert;
+    }
+
 }

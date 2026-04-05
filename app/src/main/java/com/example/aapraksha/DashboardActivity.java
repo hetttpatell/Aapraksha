@@ -9,14 +9,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.PowerManager;
+import android.content.Context;
+import android.provider.Settings;
+import android.net.Uri;
+
+import android.content.SharedPreferences;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
-import com.example.aapraksha.models.User;
 
-public class DashboardActivity extends AppCompatActivity {
+public class DashboardActivity extends BaseActivity {
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Handler sosHandler;
     private Runnable sosNavigationRunnable;
@@ -32,11 +38,48 @@ public class DashboardActivity extends AppCompatActivity {
     private View sosPulse1;
     private View sosPulse2;
     private View sosPulse3;
+
+    private boolean hasRequestedRuntimePermissions = false;
+    private boolean isRequestingPermissions = false;
+    private SharedPreferences prefs;
+
+    private final String[] REQUIRED_PERMISSIONS = {
+            android.Manifest.permission.ACCESS_FINE_LOCATION,
+            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+            android.Manifest.permission.SEND_SMS,
+            android.Manifest.permission.READ_CONTACTS,
+            android.Manifest.permission.CALL_PHONE,
+            android.Manifest.permission.CAMERA,
+            android.Manifest.permission.RECORD_AUDIO
+    };
+
+    private final androidx.activity.result.ActivityResultLauncher<String[]> requestPermissionsLauncher =
+            registerForActivityResult(new androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions(), permissions -> {
+                isRequestingPermissions = false;
+                
+                boolean allGranted = true;
+                for (Boolean isGranted : permissions.values()) {
+                    if (!isGranted) allGranted = false;
+                }
+                
+                if (!allGranted) {
+                    Toast.makeText(this, "Some permissions were denied. Certain SOS features won't work.", Toast.LENGTH_LONG).show();
+                }
+                
+                checkAndRequestPermissionsFlow();
+            });
+    
+    // Tutorial views
+    private View overlayTutorial;
+    private View tutorialHighlightArea;
+    private View cardEmergencyContacts;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+        
+        prefs = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
         
         statusDot = findViewById(R.id.status_dot);
         tvSosStatus = findViewById(R.id.tv_sos_status);
@@ -45,12 +88,178 @@ public class DashboardActivity extends AppCompatActivity {
         sosPulse2 = findViewById(R.id.sos_pulse_2);
         sosPulse3 = findViewById(R.id.sos_pulse_3);
         
+        // Tutorial View Init
+        overlayTutorial = findViewById(R.id.overlay_tutorial);
+        tutorialHighlightArea = findViewById(R.id.tutorial_highlight_area);
+        cardEmergencyContacts = findViewById(R.id.card_emergency_contacts);
+        
         auth = FirebaseAuth.getInstance();
         userRepository = new UserRepository();
         
         setupBottomNav();
         loadUserProfile();
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkAndRequestPermissionsFlow();
+    }
+
+    private void checkAndRequestPermissionsFlow() {
+        if (!hasAllRuntimePermissions() && !hasRequestedRuntimePermissions) {
+            if (!isRequestingPermissions) {
+                isRequestingPermissions = true;
+                hasRequestedRuntimePermissions = true;
+                requestPermissionsLauncher.launch(REQUIRED_PERMISSIONS);
+            }
+        } else if (!isIgnoringBatteryOptimizations() && !prefs.getBoolean("hasShownBatteryDialog", false)) {
+            prefs.edit().putBoolean("hasShownBatteryDialog", true).apply();
+            showBatteryOptimizationDialog();
+        } else if (!isAccessibilityServiceEnabled() && !prefs.getBoolean("hasShownAccessibilityDialog", false)) {
+            prefs.edit().putBoolean("hasShownAccessibilityDialog", true).apply();
+            showAccessibilityDialog();
+        } else {
+            checkEmergencyContacts();
+        }
+    }
+
+    private boolean hasAllRuntimePermissions() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            for (String permission : REQUIRED_PERMISSIONS) {
+                if (androidx.core.content.ContextCompat.checkSelfPermission(this, permission) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean isIgnoringBatteryOptimizations() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+            return pm != null && pm.isIgnoringBatteryOptimizations(getPackageName());
+        }
+        return true;
+    }
+
+    private void showBatteryOptimizationDialog() {
+        new AlertDialog.Builder(this)
+            .setTitle("Allow Background SOS")
+            .setMessage("To ensure the Volume Button SOS trigger works when the app is completely closed, you must disable battery optimizations for AapRaksha.")
+            .setPositiveButton("Enable", (dialog, which) -> {
+                Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                intent.setData(Uri.parse("package:" + getPackageName()));
+                startActivity(intent);
+            })
+            .setNegativeButton("Later", (dialog, which) -> {
+                checkAndRequestPermissionsFlow(); // move to next
+            })
+            .setCancelable(false)
+            .show();
+    }
+    
+    private void showAccessibilityDialog() {
+        new AlertDialog.Builder(this)
+            .setTitle("CRITICAL: Enable Volume SOS")
+            .setMessage("To trigger SOS using volume buttons EVEN when the app is closed, you MUST enable the AapRaksha SOS Accessibility Service in Settings.")
+            .setPositiveButton("Enable Now", (dialog, which) -> {
+                Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                startActivity(intent);
+            })
+            .setNegativeButton("Ignore", (dialog, which) -> {
+                checkAndRequestPermissionsFlow(); // move to next
+            })
+            .setCancelable(false)
+            .show();
+    }
+    
+    private boolean isAccessibilityServiceEnabled() {
+        int enabled = 0;
+        try {
+            enabled = Settings.Secure.getInt(getContentResolver(),
+                    Settings.Secure.ACCESSIBILITY_ENABLED);
+        } catch (Settings.SettingNotFoundException e) { }
+
+        if (enabled == 1) {
+            String services = Settings.Secure.getString(getContentResolver(),
+                    Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+            if (services != null) {
+                String expectedPrefix = getPackageName() + "/";
+                
+                android.text.TextUtils.SimpleStringSplitter splitter = new android.text.TextUtils.SimpleStringSplitter(':');
+                splitter.setString(services);
+                while (splitter.hasNext()) {
+                    String service = splitter.next();
+                    if (service.equalsIgnoreCase(expectedPrefix + getPackageName() + ".VolumeButtonService") ||
+                        service.equalsIgnoreCase(expectedPrefix + ".VolumeButtonService")) {
+                        return true;
+                    }
+                }
+                
+                // Fallback coarse check incase of weird formatting
+                return services.contains(getPackageName() + "/.VolumeButtonService") || 
+                       services.contains(getPackageName() + "/" + getPackageName() + ".VolumeButtonService");
+            }
+        }
+        return false;
+    }
+    
+    private void checkEmergencyContacts() {
+        if (auth.getCurrentUser() == null) return;
+        
+        String userId = auth.getCurrentUser().getUid();
+        userRepository.checkHasEmergencyContacts(userId, new UserRepository.OnContactCheckListener() {
+            @Override
+            public void onCheckComplete(boolean hasContacts) {
+                if (!hasContacts) {
+                    showAddContactsTutorial();
+                } else {
+                    if (overlayTutorial != null) {
+                        overlayTutorial.setVisibility(View.GONE);
+                    }
+                }
+            }
+            
+            @Override
+            public void onError(String errorMessage) {
+                Log.e("DashboardActivity", "Error checking contacts: " + errorMessage);
+            }
+        });
+    }
+
+    private void showAddContactsTutorial() {
+        if (overlayTutorial == null || cardEmergencyContacts == null) return;
+        
+        overlayTutorial.setVisibility(View.VISIBLE);
+        
+        // Accurate Synchronization: Align highlight area with the actual card dimensions and position
+        cardEmergencyContacts.post(() -> {
+            int[] cardLocation = new int[2];
+            cardEmergencyContacts.getLocationOnScreen(cardLocation);
+            
+            int[] overlayLocation = new int[2];
+            overlayTutorial.getLocationOnScreen(overlayLocation);
+            
+            // Match dimensions exactly
+            androidx.constraintlayout.widget.ConstraintLayout.LayoutParams params = (androidx.constraintlayout.widget.ConstraintLayout.LayoutParams) tutorialHighlightArea.getLayoutParams();
+            params.width = cardEmergencyContacts.getWidth();
+            params.height = cardEmergencyContacts.getHeight();
+            
+            // Set precise position using margins so that ConstraintLayout relative views move along with it
+            params.leftMargin = cardLocation[0] - overlayLocation[0];
+            params.topMargin = cardLocation[1] - overlayLocation[1];
+            tutorialHighlightArea.setLayoutParams(params);
+        });
+        
+        // Allow clicking the highlight area to go to contacts
+        tutorialHighlightArea.setOnClickListener(v -> {
+            overlayTutorial.setVisibility(View.GONE);
+            Intent intent = new Intent(DashboardActivity.this, EmergencyContactsActivity.class);
+            startActivity(intent);
+        });
+    }
+
     private void loadUserProfile() {
         String userId = auth.getCurrentUser().getUid();
         userRepository.getUserProfile(userId, new UserRepository.OnUserFetchListener() {
@@ -119,19 +328,25 @@ public class DashboardActivity extends AppCompatActivity {
     }
     
     private android.animation.AnimatorSet createContinuousPulseAnimator(View view, long delay) {
-        android.animation.ObjectAnimator scaleX = android.animation.ObjectAnimator.ofFloat(view, "scaleX", 1f, 2.4f);
-        android.animation.ObjectAnimator scaleY = android.animation.ObjectAnimator.ofFloat(view, "scaleY", 1f, 2.4f);
-        android.animation.ObjectAnimator alpha = android.animation.ObjectAnimator.ofFloat(view, "alpha", 0.8f, 0f);
-        scaleX.setDuration(1200);
-        scaleY.setDuration(1200);
-        alpha.setDuration(1200);
+        android.animation.ObjectAnimator scaleX = android.animation.ObjectAnimator.ofFloat(view, "scaleX", 1f, 2.8f);
+        android.animation.ObjectAnimator scaleY = android.animation.ObjectAnimator.ofFloat(view, "scaleY", 1f, 2.8f);
+        android.animation.ObjectAnimator alpha = android.animation.ObjectAnimator.ofFloat(view, "alpha", 1f, 0f);
+        
+        scaleX.setDuration(2400);
+        scaleY.setDuration(2400);
+        alpha.setDuration(2400);
+        
+        scaleX.setRepeatCount(android.animation.ValueAnimator.INFINITE);
+        scaleY.setRepeatCount(android.animation.ValueAnimator.INFINITE);
+        alpha.setRepeatCount(android.animation.ValueAnimator.INFINITE);
+        
         scaleX.setStartDelay(delay);
         scaleY.setStartDelay(delay);
         alpha.setStartDelay(delay);
 
         android.animation.AnimatorSet set = new android.animation.AnimatorSet();
         set.playTogether(scaleX, scaleY, alpha);
-        set.setInterpolator(new android.view.animation.LinearInterpolator());
+        set.setInterpolator(new android.view.animation.DecelerateInterpolator());
         return set;
     }
     

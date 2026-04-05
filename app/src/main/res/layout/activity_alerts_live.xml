@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/clean_slate">
+
+    <!-- Top Navigation Bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:background="@color/surface_white">
+
+        <ImageButton
+            android:id="@+id/back_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="Back"
+            android:scaleType="centerInside" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Live Alerts"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/midnight_blue"
+            android:layout_marginStart="16dp" />
+
+        <ImageButton
+            android:id="@+id/refresh_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_notification"
+            android:contentDescription="Refresh"
+            android:scaleType="centerInside"
+            android:tint="@color/electric_indigo" />
+
+    </LinearLayout>
+
+    <!-- Loading Progress Bar -->
+    <ProgressBar
+        android:id="@+id/loading_progress"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:visibility="gone"
+        android:indeterminate="true"
+        android:indeterminateDrawable="@android:drawable/progress_horizontal"
+        style="?android:progressBarStyleHorizontal" />
+
+    <!-- Alerts RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/alerts_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/clean_slate" />
+
+    <!-- Empty State -->
+    <LinearLayout
+        android:id="@+id/empty_state"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/ic_alert"
+            android:tint="@color/slate_grey"
+            android:scaleType="centerInside"
+            android:contentDescription="No alerts" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No Live Alerts"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/midnight_blue"
+            android:layout_marginTop="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No one needs help right now"
+            android:textSize="14sp"
+            android:textColor="@color/slate_grey"
+            android:layout_marginTop="8dp" />
+
+    </LinearLayout>
+
+    <!-- Error State -->
+    <LinearLayout
+        android:id="@+id/error_state"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/ic_info"
+            android:tint="@color/sos_red"
+            android:scaleType="centerInside"
+            android:contentDescription="Error" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Error Loading Alerts"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/midnight_blue"
+            android:layout_marginTop="16dp" />
+
+        <TextView
+            android:id="@+id/error_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Please check your connection"
+            android:textSize="14sp"
+            android:textColor="@color/slate_grey"
+            android:layout_marginTop="8dp" />
+
+        <Button
+            android:id="@+id/retry_button"
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"
+            android:text="Retry"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_on_primary"
+            android:background="@drawable/button_primary_background"
+            android:paddingHorizontal="24dp"
+            android:layout_marginTop="16dp"
+            android:textAllCaps="false" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.example.aapraksha.models.User;
 
 public class EditProfileActivity extends AppCompatActivity {
 

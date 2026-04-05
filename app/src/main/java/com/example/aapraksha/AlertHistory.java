@@ -219,7 +219,7 @@ public class AlertHistory implements Serializable {
     public static class AlertSummaryInfo implements Serializable {
         private String message;
         private String reason;
-        private String triggeredFrom; // BUTTON, VOICE, VOLUME_KEY
+        private String triggeredFrom; // BUTTON, VOLUME_KEY
         private boolean testAlert;
 
         public AlertSummaryInfo() {}

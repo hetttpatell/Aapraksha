@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+
+    <!-- Dashed outer orbit ring -->
+    <path
+        android:pathData="M60,10 A50,50 0 1,1 59.99,10"
+        android:strokeColor="#407C67FA"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:trimPathStart="0"
+        android:trimPathEnd="0.08" />
+    <path
+        android:pathData="M60,10 A50,50 0 1,1 59.99,10"
+        android:strokeColor="#407C67FA"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:trimPathStart="0.12"
+        android:trimPathEnd="0.20" />
+    <path
+        android:pathData="M60,10 A50,50 0 1,1 59.99,10"
+        android:strokeColor="#407C67FA"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:trimPathStart="0.24"
+        android:trimPathEnd="0.32" />
+    <path
+        android:pathData="M60,10 A50,50 0 1,1 59.99,10"
+        android:strokeColor="#407C67FA"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:trimPathStart="0.36"
+        android:trimPathEnd="0.44" />
+    <path
+        android:pathData="M60,10 A50,50 0 1,1 59.99,10"
+        android:strokeColor="#407C67FA"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:trimPathStart="0.48"
+        android:trimPathEnd="0.56" />
+    <path
+        android:pathData="M60,10 A50,50 0 1,1 59.99,10"
+        android:strokeColor="#407C67FA"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:trimPathStart="0.60"
+        android:trimPathEnd="0.68" />
+    <path
+        android:pathData="M60,10 A50,50 0 1,1 59.99,10"
+        android:strokeColor="#407C67FA"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:trimPathStart="0.72"
+        android:trimPathEnd="0.80" />
+    <path
+        android:pathData="M60,10 A50,50 0 1,1 59.99,10"
+        android:strokeColor="#407C67FA"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:trimPathStart="0.84"
+        android:trimPathEnd="0.92" />
+
+    <!-- Solid indigo ring -->
+    <path
+        android:pathData="M60,22 A38,38 0 1,1 59.99,22"
+        android:strokeColor="#7C67FA"
+        android:strokeWidth="2.5"
+        android:fillColor="#00000000" />
+
+    <!-- Inner solid circle with tonal fill -->
+    <path
+        android:pathData="M60,34 A26,26 0 1,1 59.99,34"
+        android:fillColor="#1F7C67FA"
+        android:strokeColor="#7C67FA"
+        android:strokeWidth="1" />
+
+    <!-- SOS text -->
+    <!-- S -->
+    <path
+        android:pathData="M50,55 C50,52 47,51 47,54 C47,57 50,56 50,59 C50,62 47,61 47,59"
+        android:strokeColor="#7C67FA"
+        android:strokeWidth="2.2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+    <!-- O -->
+    <path
+        android:pathData="M56,56 A4,5 0 1,1 55.99,56"
+        android:strokeColor="#7C67FA"
+        android:strokeWidth="2.2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+    <!-- S -->
+    <path
+        android:pathData="M68,55 C68,52 65,51 65,54 C65,57 68,56 68,59 C68,62 65,61 65,59"
+        android:strokeColor="#7C67FA"
+        android:strokeWidth="2.2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Small pulse dots around the ring -->
+    <path
+        android:pathData="M60,6 L60,6"
+        android:strokeColor="#7C67FA"
+        android:strokeWidth="3"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M98,60 L98,60"
+        android:strokeColor="#7C67FA"
+        android:strokeWidth="3"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+</vector>

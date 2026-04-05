@@ -22,7 +22,10 @@
 
     <!-- Surface Colors -->
     <color name="surface_white">#FFFFFF</color>
+    <color name="white">#FFFFFF</color>
     <color name="surface_dark">#1E293B</color>
+    <color name="surface_dark_light">#2D3748</color>
+    <color name="surface_dark_darker">#0A0F1D</color>
 
     <!-- Emergency Action Color - Neon Crimson -->
     <color name="neon_crimson">#FF0035</color>
@@ -48,6 +51,35 @@
     <color name="card_indigo_tint">#264361EE</color>
     <color name="card_stroke">#334361EE</color>
     <color name="card_stroke_dark">#4D7B93FF</color>
+
+    <!-- ========================================== -->
+    <!-- MD3 DEEP MIDNIGHT DARK - ONBOARDING THEME -->
+    <!-- ========================================== -->
+
+    <!-- Deep Midnight Surfaces -->
+    <color name="ob_background_start">#08081A</color>
+    <color name="ob_background_end">#0F0F22</color>
+    <color name="ob_surface_variant">#1C1C34</color>
+    <color name="ob_surface_container">#161628</color>
+
+    <!-- Primary Accent - Electric Indigo -->
+    <color name="ob_primary">#7C67FA</color>
+    <color name="ob_primary_tonal">#1F7C67FA</color>
+    <color name="ob_primary_border">#407C67FA</color>
+    <color name="ob_primary_dot_inactive">#337C67FA</color>
+
+    <!-- Emergency Tertiary Accent -->
+    <color name="ob_emergency">#E8445A</color>
+    <color name="ob_emergency_tonal">#1FE8445A</color>
+    <color name="ob_emergency_border">#40E8445A</color>
+
+    <!-- On-surface text -->
+    <color name="ob_text_primary">#E6E1F9</color>
+    <color name="ob_text_secondary">#A89FC8</color>
+
+    <!-- Outline/divider -->
+    <color name="ob_divider">#14FFFFFF</color>
+    <color name="ob_border_subtle">#12FFFFFF</color>
 
     <!-- Material3 Theme Colors -->
     <color name="md_theme_light_primary">#4361EE</color>

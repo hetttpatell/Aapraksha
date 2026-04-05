@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+
+    <!-- Dashed outer orbit ring in emergency red -->
+    <path
+        android:pathData="M60,10 A50,50 0 1,1 59.99,10"
+        android:strokeColor="#40E8445A"
+        android:strokeWidth="1.2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:trimPathStart="0"
+        android:trimPathEnd="0.06" />
+    <path
+        android:pathData="M60,10 A50,50 0 1,1 59.99,10"
+        android:strokeColor="#40E8445A"
+        android:strokeWidth="1.2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:trimPathStart="0.10"
+        android:trimPathEnd="0.16" />
+    <path
+        android:pathData="M60,10 A50,50 0 1,1 59.99,10"
+        android:strokeColor="#40E8445A"
+        android:strokeWidth="1.2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:trimPathStart="0.20"
+        android:trimPathEnd="0.26" />
+    <path
+        android:pathData="M60,10 A50,50 0 1,1 59.99,10"
+        android:strokeColor="#40E8445A"
+        android:strokeWidth="1.2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:trimPathStart="0.30"
+        android:trimPathEnd="0.36" />
+    <path
+        android:pathData="M60,10 A50,50 0 1,1 59.99,10"
+        android:strokeColor="#40E8445A"
+        android:strokeWidth="1.2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:trimPathStart="0.40"
+        android:trimPathEnd="0.46" />
+    <path
+        android:pathData="M60,10 A50,50 0 1,1 59.99,10"
+        android:strokeColor="#40E8445A"
+        android:strokeWidth="1.2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:trimPathStart="0.50"
+        android:trimPathEnd="0.56" />
+    <path
+        android:pathData="M60,10 A50,50 0 1,1 59.99,10"
+        android:strokeColor="#40E8445A"
+        android:strokeWidth="1.2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:trimPathStart="0.60"
+        android:trimPathEnd="0.66" />
+    <path
+        android:pathData="M60,10 A50,50 0 1,1 59.99,10"
+        android:strokeColor="#40E8445A"
+        android:strokeWidth="1.2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:trimPathStart="0.70"
+        android:trimPathEnd="0.76" />
+    <path
+        android:pathData="M60,10 A50,50 0 1,1 59.99,10"
+        android:strokeColor="#40E8445A"
+        android:strokeWidth="1.2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:trimPathStart="0.80"
+        android:trimPathEnd="0.86" />
+    <path
+        android:pathData="M60,10 A50,50 0 1,1 59.99,10"
+        android:strokeColor="#40E8445A"
+        android:strokeWidth="1.2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:trimPathStart="0.90"
+        android:trimPathEnd="0.96" />
+
+    <!-- Padlock body -->
+    <path
+        android:pathData="M42,55 L42,55 Q42,48 48,48 L72,48 Q78,48 78,55 L78,80 Q78,87 72,87 L48,87 Q42,87 42,80 Z"
+        android:fillColor="#1FE8445A"
+        android:strokeColor="#E8445A"
+        android:strokeWidth="2" />
+
+    <!-- Shackle (the U-shaped part on top) -->
+    <path
+        android:pathData="M48,48 L48,38 C48,28 72,28 72,38 L72,48"
+        android:strokeColor="#E8445A"
+        android:strokeWidth="2.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Keyhole circle -->
+    <path
+        android:pathData="M60,63 A5,5 0 1,1 59.99,63"
+        android:fillColor="#E8445A"
+        android:strokeColor="#00000000"
+        android:strokeWidth="0" />
+
+    <!-- Keyhole drop -->
+    <path
+        android:pathData="M57,67 L60,78 L63,67"
+        android:fillColor="#E8445A"
+        android:strokeColor="#00000000"
+        android:strokeWidth="0" />
+</vector>

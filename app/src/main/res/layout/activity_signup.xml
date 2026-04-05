@@ -13,38 +13,44 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="80dp"
-        android:focusableInTouchMode="true">
+        android:paddingBottom="60dp">
 
-        <!-- Create Account Title -->
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
-            android:text="Create Account"
-            android:fontFamily="@font/montserrat_extrabold"
-            android:textColor="@color/text_on_dark"
-            android:textSize="32sp"
-            android:letterSpacing="0.05"
-            app:layout_constraintTop_toTopOf="parent"
+        <!-- Header Section with Gradient Blur Effect (Visual only) -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:background="@drawable/bottom_to_top_gradient_dark"
+            android:alpha="0.3"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Back Button (Optional, if needed) -->
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="Back"
+            app:tint="@color/text_on_dark"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Logo -->
         <ImageView
             android:id="@+id/iv_logo"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginTop="32dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="40dp"
             android:src="@drawable/logo"
             android:contentDescription="App Logo"
             android:scaleType="fitCenter"
-            app:layout_constraintTop_toBottomOf="@id/tv_title"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Main Heading -->
+        <!-- Title -->
         <TextView
             android:id="@+id/tv_main_heading"
             android:layout_width="wrap_content"
@@ -54,21 +60,20 @@
             android:fontFamily="@font/montserrat_extrabold"
             android:textColor="@color/text_on_dark"
             android:textSize="28sp"
-            android:letterSpacing="0.05"
+            android:letterSpacing="0.02"
             app:layout_constraintTop_toBottomOf="@id/iv_logo"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Subtitle -->
         <TextView
             android:id="@+id/tv_subtitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="32dp"
-            android:text="Enter your details to get started with your protection journey."
-            android:fontFamily="@font/montserrat_regular"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="40dp"
+            android:text="Your journey to personal safety starts here."
+            android:fontFamily="@font/montserrat_medium"
             android:textColor="@color/slate_grey"
             android:textSize="14sp"
             android:textAlignment="center"
@@ -76,321 +81,313 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Full Name Label -->
-        <TextView
-            android:id="@+id/tv_name_label"
-            android:layout_width="0dp"
+        <!-- Input Form Container -->
+        <LinearLayout
+            android:id="@+id/ll_form"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
+            android:orientation="vertical"
+            android:paddingHorizontal="32dp"
             android:layout_marginTop="32dp"
-            android:layout_marginEnd="32dp"
-            android:text="Full Name"
-            android:fontFamily="@font/montserrat_medium"
-            android:textColor="@color/text_on_dark"
-            android:textSize="13sp"
-            app:layout_constraintTop_toBottomOf="@id/tv_subtitle"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/tv_subtitle">
 
-        <!-- Full Name Input -->
-        <EditText
-            android:id="@+id/et_full_name"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="32dp"
-            android:background="@drawable/bg_login_input"
-            android:fontFamily="@font/montserrat_regular"
-            android:hint="Enter your name"
-            android:textColorHint="@color/slate_grey"
-            android:textColor="@color/text_on_dark"
-            android:textSize="14sp"
-            android:inputType="textPersonName"
-            android:maxLines="1"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            app:layout_constraintTop_toBottomOf="@id/tv_name_label"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <!-- Phone Number Label -->
-        <TextView
-            android:id="@+id/tv_phone_label"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="32dp"
-            android:text="Phone Number"
-            android:fontFamily="@font/montserrat_medium"
-            android:textColor="@color/text_on_dark"
-            android:textSize="13sp"
-            app:layout_constraintTop_toBottomOf="@id/et_full_name"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <!-- Phone Input -->
-        <LinearLayout
-            android:id="@+id/ll_phone_input"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="32dp"
-            android:orientation="horizontal"
-            android:background="@drawable/bg_login_input"
-            android:gravity="center_vertical"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            app:layout_constraintTop_toBottomOf="@id/tv_phone_label"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <EditText
-                android:id="@+id/et_phone"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:fontFamily="@font/montserrat_regular"
-                android:hint="+1 (555) 000-0000"
-                android:textColorHint="@color/slate_grey"
-                android:textColor="@color/text_on_dark"
-                android:textSize="14sp"
-                android:inputType="phone"
-                android:maxLines="1"
-                android:paddingVertical="0dp" />
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_phone"
-                android:contentDescription="Phone Icon"
-                app:tint="@color/slate_grey" />
-
-        </LinearLayout>
-
-        <!-- Email Label -->
-        <TextView
-            android:id="@+id/tv_email_label"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="32dp"
-            android:text="Email Address"
-            android:fontFamily="@font/montserrat_medium"
-            android:textColor="@color/text_on_dark"
-            android:textSize="13sp"
-            app:layout_constraintTop_toBottomOf="@id/ll_phone_input"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <!-- Email Input -->
-        <LinearLayout
-            android:id="@+id/ll_email_input"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="32dp"
-            android:orientation="horizontal"
-            android:background="@drawable/bg_login_input"
-            android:gravity="center_vertical"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            app:layout_constraintTop_toBottomOf="@id/tv_email_label"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <EditText
-                android:id="@+id/et_email"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:fontFamily="@font/montserrat_regular"
-                android:hint="name@example.com"
-                android:textColorHint="@color/slate_grey"
-                android:textColor="@color/text_on_dark"
-                android:textSize="14sp"
-                android:inputType="textEmailAddress"
-                android:maxLines="1"
-                android:paddingVertical="0dp" />
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_email"
-                android:contentDescription="Email Icon"
-                app:tint="@color/slate_grey" />
-
-        </LinearLayout>
-
-        <!-- Password Label -->
-        <TextView
-            android:id="@+id/tv_password_label"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="32dp"
-            android:text="Password"
-            android:fontFamily="@font/montserrat_medium"
-            android:textColor="@color/text_on_dark"
-            android:textSize="13sp"
-            app:layout_constraintTop_toBottomOf="@id/ll_email_input"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <!-- Password Input -->
-        <LinearLayout
-            android:id="@+id/ll_password_input"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="32dp"
-            android:orientation="horizontal"
-            android:background="@drawable/bg_login_input"
-            android:gravity="center_vertical"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            app:layout_constraintTop_toBottomOf="@id/tv_password_label"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <EditText
-                android:id="@+id/et_password"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:fontFamily="@font/montserrat_regular"
-                android:hint="••••••••"
-                android:textColorHint="@color/slate_grey"
-                android:textColor="@color/text_on_dark"
-                android:textSize="14sp"
-                android:inputType="textPassword"
-                android:maxLines="1"
-                android:paddingVertical="0dp" />
-
-            <ImageView
-                android:id="@+id/iv_toggle_password"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_eye_off"
-                android:contentDescription="Toggle Password"
-                app:tint="@color/slate_grey" />
-
-        </LinearLayout>
-
-        <!-- Confirm Password Label -->
-        <TextView
-            android:id="@+id/tv_confirm_password_label"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="32dp"
-            android:text="Confirm Password"
-            android:fontFamily="@font/montserrat_medium"
-            android:textColor="@color/text_on_dark"
-            android:textSize="13sp"
-            app:layout_constraintTop_toBottomOf="@id/ll_password_input"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <!-- Confirm Password Input -->
-        <LinearLayout
-            android:id="@+id/ll_confirm_password_input"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="32dp"
-            android:orientation="horizontal"
-            android:background="@drawable/bg_login_input"
-            android:gravity="center_vertical"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            app:layout_constraintTop_toBottomOf="@id/tv_confirm_password_label"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <EditText
-                android:id="@+id/et_confirm_password"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:fontFamily="@font/montserrat_regular"
-                android:hint="••••••••"
-                android:textColorHint="@color/slate_grey"
-                android:textColor="@color/text_on_dark"
-                android:textSize="14sp"
-                android:inputType="textPassword"
-                android:maxLines="1"
-                android:paddingVertical="0dp" />
-
-            <ImageView
-                android:id="@+id/iv_toggle_confirm_password"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_lock"
-                android:contentDescription="Lock Icon"
-                app:tint="@color/slate_grey" />
-
-        </LinearLayout>
-
-        <!-- Register Button -->
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_register"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="32dp"
-            android:background="@drawable/bg_button_login"
-            android:text="Register"
-            android:fontFamily="@font/montserrat_semibold"
-            android:textColor="@color/text_on_primary"
-            android:textSize="16sp"
-            android:textAllCaps="false"
-            android:gravity="center"
-            app:layout_constraintTop_toBottomOf="@id/ll_confirm_password_input"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <!-- Login Text -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:orientation="horizontal"
-            android:gravity="center"
-            app:layout_constraintTop_toBottomOf="@id/btn_register"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
+            <!-- Full Name -->
             <TextView
-                android:id="@+id/tv_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Already have an account? "
+                android:text="FULL NAME"
+                android:fontFamily="@font/montserrat_bold"
+                android:textColor="@color/slate_grey"
+                android:textSize="11sp"
+                android:letterSpacing="0.1"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/rounded_field_dark"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp"
+                android:layout_marginBottom="20dp">
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_profile"
+                    app:tint="@color/electric_indigo_light" />
+                <EditText
+                    android:id="@+id/et_full_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:hint="Guardian Name"
+                    android:textColorHint="@color/slate_grey"
+                    android:textColor="@color/text_on_dark"
+                    android:fontFamily="@font/montserrat"
+                    android:textSize="15sp"
+                    android:paddingStart="12dp"
+                    android:inputType="textPersonName"
+                    android:maxLines="1" />
+            </LinearLayout>
+
+            <!-- Phone Number -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PHONE NUMBER"
+                android:fontFamily="@font/montserrat_bold"
+                android:textColor="@color/slate_grey"
+                android:textSize="11sp"
+                android:letterSpacing="0.1"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/rounded_field_dark"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp"
+                android:layout_marginBottom="20dp">
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_phone"
+                    app:tint="@color/electric_indigo_light" />
+                <EditText
+                    android:id="@+id/et_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:hint="+1 555 000 0000"
+                    android:textColorHint="@color/slate_grey"
+                    android:textColor="@color/text_on_dark"
+                    android:fontFamily="@font/montserrat"
+                    android:textSize="15sp"
+                    android:paddingStart="12dp"
+                    android:inputType="phone"
+                    android:maxLines="1" />
+            </LinearLayout>
+
+            <!-- Email -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="EMAIL ADDRESS"
+                android:fontFamily="@font/montserrat_bold"
+                android:textColor="@color/slate_grey"
+                android:textSize="11sp"
+                android:letterSpacing="0.1"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/rounded_field_dark"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp"
+                android:layout_marginBottom="20dp">
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_email"
+                    app:tint="@color/electric_indigo_light" />
+                <EditText
+                    android:id="@+id/et_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:hint="your@email.com"
+                    android:textColorHint="@color/slate_grey"
+                    android:textColor="@color/text_on_dark"
+                    android:fontFamily="@font/montserrat"
+                    android:textSize="15sp"
+                    android:paddingStart="12dp"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1" />
+            </LinearLayout>
+
+            <!-- Password -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PASSWORD"
+                android:fontFamily="@font/montserrat_bold"
+                android:textColor="@color/slate_grey"
+                android:textSize="11sp"
+                android:letterSpacing="0.1"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/rounded_field_dark"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp"
+                android:layout_marginBottom="20dp">
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_lock"
+                    app:tint="@color/electric_indigo" />
+                <EditText
+                    android:id="@+id/et_password"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:hint="••••••••"
+                    android:textColorHint="@color/slate_grey"
+                    android:textColor="@color/text_on_dark"
+                    android:fontFamily="@font/montserrat"
+                    android:textSize="15sp"
+                    android:paddingStart="12dp"
+                    android:inputType="textPassword"
+                    android:maxLines="1" />
+                <ImageView
+                    android:id="@+id/iv_toggle_password"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_eye_off"
+                    app:tint="@color/slate_grey" />
+            </LinearLayout>
+
+            <!-- Confirm Password -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CONFIRM PASSWORD"
+                android:fontFamily="@font/montserrat_bold"
+                android:textColor="@color/slate_grey"
+                android:textSize="11sp"
+                android:letterSpacing="0.1"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/rounded_field_dark"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp"
+                android:layout_marginBottom="24dp">
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_lock"
+                    app:tint="@color/electric_indigo" />
+                <EditText
+                    android:id="@+id/et_confirm_password"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:hint="••••••••"
+                    android:textColorHint="@color/slate_grey"
+                    android:textColor="@color/text_on_dark"
+                    android:fontFamily="@font/montserrat"
+                    android:textSize="15sp"
+                    android:paddingStart="12dp"
+                    android:inputType="textPassword"
+                    android:maxLines="1" />
+                <ImageView
+                    android:id="@+id/iv_toggle_confirm_password"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_eye_off"
+                    app:tint="@color/slate_grey" />
+            </LinearLayout>
+
+            <!-- Register Button -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_register"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/button_gradient_primary"
+                android:text="Create Account"
+                android:fontFamily="@font/montserrat_bold"
+                android:textColor="@color/text_on_primary"
+                android:textSize="16sp"
+                android:textAllCaps="false"
+                android:elevation="4dp"
+                android:stateListAnimator="@null" />
+
+            <!-- Divider Text -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:text="or continue with"
                 android:fontFamily="@font/montserrat_regular"
                 android:textColor="@color/slate_grey"
-                android:textSize="13sp" />
+                android:textSize="12sp" />
 
-            <TextView
-                android:id="@+id/tv_login_link"
+            <!-- Google Sign In Button -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/btn_google"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="#1E2C48"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                android:clickable="true"
+                android:focusable="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:background="@android:color/transparent">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_google"
+                        android:contentDescription="Google Logo" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="Continue with Google"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:textColor="@color/text_on_dark"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Login Link -->
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Login here"
-                android:fontFamily="@font/montserrat_semibold"
-                android:textColor="@color/electric_indigo_light"
-                android:textSize="13sp" />
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:layout_marginTop="24dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Already a member? "
+                    android:fontFamily="@font/montserrat"
+                    android:textColor="@color/slate_grey"
+                    android:textSize="14sp" />
+                <TextView
+                    android:id="@+id/tv_login_link"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sign In"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:textColor="@color/electric_indigo_light"
+                    android:textSize="14sp" />
+            </LinearLayout>
 
         </LinearLayout>
 

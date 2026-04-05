@@ -1,4 +1,4 @@
-package com.example.aapraksha.models;
+package com.example.aapraksha;
 
 import com.google.firebase.Timestamp;
 import java.io.Serializable;

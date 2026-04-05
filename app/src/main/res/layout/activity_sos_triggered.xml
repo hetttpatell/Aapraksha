@@ -156,20 +156,28 @@
                 android:layout_marginTop="8dp"
                 android:letterSpacing="0.02" />
 
+            <!-- Audio Recording Status -->
+            <TextView
+                android:id="@+id/tv_audio_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/soft_lavender"
+                android:textSize="11sp"
+                android:layout_gravity="center"
+                android:layout_marginTop="4dp"
+                android:visibility="gone"
+                android:letterSpacing="0.02" />
+
             <!-- Live Contact Counter Card -->
-            <androidx.cardview.widget.CardView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="@color/input_background_dark">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                android:background="@drawable/bg_glass_panel"
+                android:orientation="vertical"
+                android:padding="16dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -241,24 +249,16 @@
 
                     </LinearLayout>
 
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
+            </LinearLayout>
 
             <!-- Live Location Card -->
-            <androidx.cardview.widget.CardView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="@color/input_background_dark">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                android:background="@drawable/bg_glass_panel"
+                android:orientation="vertical"
+                android:padding="16dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -401,24 +401,16 @@
 
                     </LinearLayout>
 
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
+            </LinearLayout>
 
             <!-- Emergency Message Card -->
-            <androidx.cardview.widget.CardView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="@color/input_background_dark">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="14dp">
+                android:background="@drawable/bg_glass_panel"
+                android:orientation="vertical"
+                android:padding="14dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -442,9 +434,7 @@
                         android:maxLines="3"
                         android:ellipsize="end" />
 
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
+            </LinearLayout>
 
             <!-- Cancel SOS Button -->
             <androidx.cardview.widget.CardView
