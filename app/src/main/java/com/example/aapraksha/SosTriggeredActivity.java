@@ -15,7 +15,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Looper;
-import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
@@ -26,6 +25,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -48,11 +48,15 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import com.example.aapraksha.ai.danger.GeoHashUtil;
+import com.example.aapraksha.ai.gemini.GeminiCloudHelper;
 
 public class SosTriggeredActivity extends AppCompatActivity {
 
@@ -72,6 +76,7 @@ public class SosTriggeredActivity extends AppCompatActivity {
     private TextView tvContactStatus;
     private TextView tvFailedCount;
     private TextView tvAudioStatus;
+    private TextView tvAlertMessage;
     
     private View sosPulse1;
     private View sosPulse2;
@@ -97,6 +102,7 @@ public class SosTriggeredActivity extends AppCompatActivity {
     
     // Audio recorder
     private SosAudioRecorder audioRecorder;
+    private GeminiCloudHelper geminiCloudHelper;
     
     // Data
     private List<EmergencyContact> contactList = new ArrayList<>();
@@ -106,6 +112,11 @@ public class SosTriggeredActivity extends AppCompatActivity {
     private boolean locationReceived = false;
     private boolean sosCancelled = false;
     private DecimalFormat df = new DecimalFormat("#.####");
+    private long sosTriggeredTimeMs; // Track when SOS was triggered for duration calculation
+    private float lastAccuracy = 0f;
+    private String lastAddress = "Location tracking active";
+    private String lastGeohash;
+    private String lastTimeOfDay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,16 +142,17 @@ public class SosTriggeredActivity extends AppCompatActivity {
         // UI Initialization
         tvCountdown = findViewById(R.id.tv_countdown);
         tvCountdownText = findViewById(R.id.tv_countdown_text);
-        tvLocationAddress = findViewById(R.id.tv_location);
+        tvLocationAddress = findViewById(R.id.tv_location_address);
         tvLatitude = findViewById(R.id.tv_latitude);
         tvLongitude = findViewById(R.id.tv_longitude);
         tvAccuracyValue = findViewById(R.id.tv_accuracy_value);
         tvAccuracyStatus = findViewById(R.id.tv_accuracy_status);
         
-        tvContactCount = findViewById(R.id.tv_audio_count); 
-        tvContactStatus = findViewById(R.id.tv_message_count);
-        tvFailedCount = findViewById(R.id.tv_video_count);
+        tvContactCount = findViewById(R.id.tv_contact_count); 
+        tvContactStatus = findViewById(R.id.tv_contact_status);
+        tvFailedCount = findViewById(R.id.tv_failed_count);
         tvAudioStatus = findViewById(R.id.tv_audio_status);
+        tvAlertMessage = findViewById(R.id.tv_alert_message);
         
         sosPulse1 = findViewById(R.id.sos_pulse_1);
         sosPulse2 = findViewById(R.id.sos_pulse_2);
@@ -155,6 +167,7 @@ public class SosTriggeredActivity extends AppCompatActivity {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         geocoder = new Geocoder(this, Locale.getDefault());
         audioRecorder = new SosAudioRecorder();
+        geminiCloudHelper = new GeminiCloudHelper();
 
         // Start the SOS Lock Service to prevent leaving this screen
         startSosLockService();
@@ -297,7 +310,8 @@ public class SosTriggeredActivity extends AppCompatActivity {
     private void updateLocationUI(Location location) {
         if (tvLatitude != null) tvLatitude.setText(df.format(location.getLatitude()));
         if (tvLongitude != null) tvLongitude.setText(df.format(location.getLongitude()));
-        if (tvAccuracyValue != null) tvAccuracyValue.setText(String.format("%.0fm", location.getAccuracy()));
+        lastAccuracy = location.getAccuracy();
+        if (tvAccuracyValue != null) tvAccuracyValue.setText(String.format("%.0fm", lastAccuracy));
         float accuracy = location.getAccuracy();
         if (tvAccuracyStatus != null) {
             if (accuracy < 10) {
@@ -317,7 +331,8 @@ public class SosTriggeredActivity extends AppCompatActivity {
                 Address address = addresses.get(0);
                 String addressText = (address.getThoroughfare() != null ? address.getThoroughfare() + ", " : "") +
                         (address.getLocality() != null ? address.getLocality() : "");
-                if (tvLocationAddress != null) tvLocationAddress.setText(addressText.isEmpty() ? "Location Obtained" : addressText);
+                lastAddress = addressText.isEmpty() ? "Location Obtained" : addressText;
+                if (tvLocationAddress != null) tvLocationAddress.setText(lastAddress);
             }
         } catch (IOException e) {
             Log.e(TAG, "Geocoding error: " + e.getMessage());
@@ -377,22 +392,32 @@ public class SosTriggeredActivity extends AppCompatActivity {
     }
 
     private void createSOSAlert() {
-        if (auth.getCurrentUser() == null) return;
+        if (auth.getCurrentUser() == null) {
+            Toast.makeText(this, "Please sign in to send SOS", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
         String userId = auth.getCurrentUser().getUid();
+        sosTriggeredTimeMs = System.currentTimeMillis();
+        Timestamp now = new Timestamp(new Date());
         
         Map<String, Object> sosAlert = new HashMap<>();
         sosAlert.put("userId", userId);
         sosAlert.put("status", "ACTIVE");
-        sosAlert.put("alertType", "SOS");
+        sosAlert.put("type", "SOS");
+        sosAlert.put("alertType", "SOS"); // legacy compatibility
+        sosAlert.put("createdAt", now);
+        sosAlert.put("updatedAt", now);
 
         Map<String, Object> sosData = new HashMap<>();
-        sosData.put("triggeredAt", new Timestamp(new Date()));
+        sosData.put("triggeredAt", now);
         sosAlert.put("sosData", sosData);
 
         Map<String, Object> locationData = new HashMap<>();
         locationData.put("latitude", latitude);
         locationData.put("longitude", longitude);
-        locationData.put("address", "Location tracking active");
+        locationData.put("address", lastAddress);
+        locationData.put("accuracy", lastAccuracy);
         sosAlert.put("location", locationData);
 
         Map<String, Object> audioData = new HashMap<>();
@@ -400,12 +425,24 @@ public class SosTriggeredActivity extends AppCompatActivity {
         audioData.put("duration", SosAudioRecorder.RECORDING_DURATION_SECONDS);
         sosAlert.put("audioData", audioData);
 
+        // Danger Intelligence Layer: add geohash + timeOfDay for zone scoring
+        lastGeohash = GeoHashUtil.encode(latitude, longitude);
+        sosAlert.put("geohash", lastGeohash);
+        
+        Calendar cal = Calendar.getInstance();
+        lastTimeOfDay = GeoHashUtil.getTimeOfDay(cal.get(Calendar.HOUR_OF_DAY));
+        sosAlert.put("timeOfDay", lastTimeOfDay);
+        sosAlert.put("resolved", false);
+        sosAlert.put("durationSeconds", 0);
+        sosAlert.put("alertMessage", buildDefaultMessage());
+
         db.collection("alerts")
                 .add(sosAlert)
                 .addOnSuccessListener(docRef -> {
                     currentAlertId = docRef.getId();
                     db.collection("alerts").document(currentAlertId).update("alertId", currentAlertId);
-                    sendSmsToContacts();
+                    updateAlertMessage(buildDefaultMessage());
+                    requestSmartMessageAndSend();
                     startPeriodicLocationUpdates();
                     new android.os.Handler(Looper.getMainLooper()).postDelayed(() -> {
                         if (!sosCancelled) startAudioRecording();
@@ -479,13 +516,84 @@ public class SosTriggeredActivity extends AppCompatActivity {
         });
     }
 
-    private void sendSmsToContacts() {
+    private String buildDefaultMessage() {
+        return "🚨 EMERGENCY SOS! I am in danger! My current Location: https://maps.google.com/?q=" + latitude + "," + longitude;
+    }
+
+    private void updateAlertMessage(String message) {
+        if (tvAlertMessage == null || message == null) return;
+        runOnUiThread(() -> tvAlertMessage.setText(message));
+    }
+
+    private void requestSmartMessageAndSend() {
+        String fallbackMessage = buildDefaultMessage();
+        if (auth.getCurrentUser() == null || currentAlertId == null) {
+            updateAlertMessage(fallbackMessage);
+            sendSmsToContacts(fallbackMessage);
+            return;
+        }
+
+        String geohash = lastGeohash != null ? lastGeohash : GeoHashUtil.encode(latitude, longitude);
+        String timeOfDay = lastTimeOfDay != null ? lastTimeOfDay
+                : GeoHashUtil.getTimeOfDay(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
+        String locationStr = (lastAddress != null && !lastAddress.isEmpty()) ? lastAddress : "current location";
+
+        userRepository.getUserProfile(auth.getCurrentUser().getUid(), new UserRepository.OnUserFetchListener() {
+            @Override
+            public void onSuccess(User user) {
+                String name = user != null ? user.getFullName() : null;
+                requestSmartMessageWithName(name, locationStr, geohash, timeOfDay, fallbackMessage);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                requestSmartMessageWithName(null, locationStr, geohash, timeOfDay, fallbackMessage);
+            }
+        });
+    }
+
+    private void requestSmartMessageWithName(String name, String locationStr, String geohash, String timeOfDay, String fallbackMessage) {
+        if (geminiCloudHelper == null || currentAlertId == null) {
+            updateAlertMessage(fallbackMessage);
+            sendSmsToContacts(fallbackMessage);
+            return;
+        }
+
+        geminiCloudHelper.getSmartMessage(currentAlertId, name, locationStr, geohash, timeOfDay,
+                new GeminiCloudHelper.OnMessageReadyListener() {
+                    @Override
+                    public void onReady(String smartMessage) {
+                        String finalMessage = buildSmsMessage(smartMessage);
+                        updateAlertMessage(finalMessage);
+                        if (currentAlertId != null) {
+                            db.collection("alerts").document(currentAlertId).update("alertMessage", finalMessage);
+                        }
+                        sendSmsToContacts(finalMessage);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        updateAlertMessage(fallbackMessage);
+                        sendSmsToContacts(fallbackMessage);
+                    }
+                });
+    }
+
+    private String buildSmsMessage(String message) {
+        if (message == null || message.trim().isEmpty()) return buildDefaultMessage();
+        if (!message.contains("http")) {
+            return message + " https://maps.google.com/?q=" + latitude + "," + longitude;
+        }
+        return message;
+    }
+
+    private void sendSmsToContacts(String message) {
         if (contactList.isEmpty()) return;
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) return;
         ArrayList<String> phones = new ArrayList<>();
         for (EmergencyContact c : contactList) phones.add(c.getPhone());
-        String message = "🚨 EMERGENCY SOS! I am in danger! My current Location: https://maps.google.com/?q=" + latitude + "," + longitude;
-        SMSHelper.sendSMS(this, message, phones, new SMSHelper.OnSMSStatusListener() {
+        String safeMessage = message != null ? message : buildDefaultMessage();
+        SMSHelper.sendSMS(this, safeMessage, phones, new SMSHelper.OnSMSStatusListener() {
             @Override
             public void onSmsSent(int successCount, int totalCount, List<String> failedPhones) {
                 if (tvContactStatus != null) tvContactStatus.setText(successCount + " / " + totalCount + " sent");
@@ -509,6 +617,8 @@ public class SosTriggeredActivity extends AppCompatActivity {
                     Map<String, Object> loc = new HashMap<>();
                     loc.put("latitude", latitude);
                     loc.put("longitude", longitude);
+                    loc.put("accuracy", lastAccuracy);
+                    loc.put("address", lastAddress);
                     loc.put("updatedAt", new Timestamp(new Date()));
                     db.collection("alerts").document(currentAlertId).update("location", loc);
                     periodicLocationHandler.postDelayed(this, 30000); // 30s
@@ -519,34 +629,48 @@ public class SosTriggeredActivity extends AppCompatActivity {
     }
 
     private void showPINDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Cancel SOS Alert");
-        builder.setMessage("Enter your emergency PIN to cancel the alert:");
-        final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
-        builder.setView(input);
-        builder.setPositiveButton("Verify", (dialog, which) -> {
-            String pin = input.getText().toString();
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_pin_entry, null);
+        EditText input = dialogView.findViewById(R.id.et_emergency_pin);
+        TextView btnCancel = dialogView.findViewById(R.id.btn_cancel);
+        AppCompatButton btnVerify = dialogView.findViewById(R.id.btn_verify);
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+        btnVerify.setOnClickListener(v -> {
+            String pin = input.getText().toString().trim();
+            if (pin.isEmpty()) {
+                Toast.makeText(this, "Enter your PIN", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            dialog.dismiss();
             verifyPIN(pin);
         });
-        builder.setNegativeButton("Back", (dialog, which) -> dialog.cancel());
-        builder.show();
+
+        dialog.show();
     }
 
     private void verifyPIN(String pin) {
+        if (pin == null || pin.trim().isEmpty()) {
+            Toast.makeText(this, "Enter your PIN", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (auth.getCurrentUser() == null) { finish(); return; }
         String uid = auth.getCurrentUser().getUid();
         db.collection("users").document(uid).get().addOnSuccessListener(doc -> {
             String savedPin = doc.getString("emergencyPin");
             if (pin.equals(savedPin) || pin.equals("1234")) { // Fallback 1234
-                cancelSos();
+                resolveSos();
             } else {
                 Toast.makeText(this, "Incorrect PIN!", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void cancelSos() {
+    private void resolveSos() {
         sosCancelled = true;
         if (countDownTimer != null) countDownTimer.cancel();
         if (continuousPulseAnimator != null) continuousPulseAnimator.cancel();
@@ -555,11 +679,31 @@ public class SosTriggeredActivity extends AppCompatActivity {
         stopSosLockService();
 
         if (currentAlertId != null) {
-            db.collection("alerts").document(currentAlertId).update("status", "CANCELLED")
-                    .addOnCompleteListener(t -> finish());
+            // Calculate SOS duration for severity scoring
+            int durationSeconds = 0;
+            if (sosTriggeredTimeMs > 0) {
+                durationSeconds = (int) ((System.currentTimeMillis() - sosTriggeredTimeMs) / 1000);
+            }
+            
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("status", "RESOLVED");
+            updates.put("durationSeconds", durationSeconds);
+            updates.put("resolved", true);
+            updates.put("resolvedAt", new Timestamp(new Date()));
+            updates.put("updatedAt", new Timestamp(new Date()));
+            
+            db.collection("alerts").document(currentAlertId).update(updates)
+                    .addOnCompleteListener(t -> navigateToSafeScreen());
         } else {
-            finish();
+            navigateToSafeScreen();
         }
+    }
+
+    private void navigateToSafeScreen() {
+        Intent intent = new Intent(this, SafeScreenActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 
     @Override

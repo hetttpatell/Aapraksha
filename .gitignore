@@ -13,3 +13,12 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Firebase MCP local artifacts and secrets
+firebase-mcp/node_modules/
+firebase-mcp/.env
+firebase-mcp/*.log
+
+# Service account keys (never commit)
+*serviceAccount*.json
+*-firebase-adminsdk-*.json

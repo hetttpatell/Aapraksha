@@ -1,0 +1,73 @@
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:generateDebugBuildConfig UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:injectCrashlyticsMappingFileIdDebug UP-TO-DATE
+> Task :app:injectCrashlyticsVersionControlInfoDebug UP-TO-DATE
+> Task :app:processDebugGoogleServices UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:processDebugNavigationResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:generateDebugRFile UP-TO-DATE
+> Task :app:compileDebugKotlin NO-SOURCE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+
+> Task :app:compileDebugJavaWithJavac
+C:\Users\Jitu\AndroidStudioProjects\Aapraksha\app\src\main\java\com\example\aapraksha\ai\anomaly\AnomalyDetectionService.java:49: error: constructor CheckInNotificationHelper in class CheckInNotificationHelper cannot be applied to given types;
+        checkInHelper = new CheckInNotificationHelper(this);
+                        ^
+  required: no arguments
+  found:    AnomalyDetectionService
+  reason: actual and formal argument lists differ in length
+C:\Users\Jitu\AndroidStudioProjects\Aapraksha\app\src\main\java\com\example\aapraksha\ai\audio\AudioThreatService.java:28: error: constructor CheckInNotificationHelper in class CheckInNotificationHelper cannot be applied to given types;
+        checkInHelper = new CheckInNotificationHelper(this);
+                        ^
+  required: no arguments
+  found:    AudioThreatService
+  reason: actual and formal argument lists differ in length
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: C:\Users\Jitu\AndroidStudioProjects\Aapraksha\app\src\main\java\com\example\aapraksha\HistoryListAdapter.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+2 errors
+
+> Task :app:compileDebugJavaWithJavac FAILED
+
+[Incubating] Problems report is available at: file:///C:/Users/Jitu/AndroidStudioProjects/Aapraksha/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileDebugJavaWithJavac'.
+> Compilation failed; see the compiler output below.
+  C:\Users\Jitu\AndroidStudioProjects\Aapraksha\app\src\main\java\com\example\aapraksha\ai\anomaly\AnomalyDetectionService.java:49: error: constructor CheckInNotificationHelper in class CheckInNotificationHelper cannot be applied to given types;
+          checkInHelper = new CheckInNotificationHelper(this);
+                          ^
+    required: no arguments
+    found:    AnomalyDetectionService
+    reason: actual and formal argument lists differ in length
+  C:\Users\Jitu\AndroidStudioProjects\Aapraksha\app\src\main\java\com\example\aapraksha\ai\audio\AudioThreatService.java:28: error: constructor CheckInNotificationHelper in class CheckInNotificationHelper cannot be applied to given types;
+          checkInHelper = new CheckInNotificationHelper(this);
+                          ^
+    required: no arguments
+    found:    AudioThreatService
+    reason: actual and formal argument lists differ in length
+  Note: Recompile with -Xlint:deprecation for details.
+  Note: C:\Users\Jitu\AndroidStudioProjects\Aapraksha\app\src\main\java\com\example\aapraksha\HistoryListAdapter.java uses unchecked or unsafe operations.
+  Note: Recompile with -Xlint:unchecked for details.
+  Note: Some input files use or override a deprecated API.
+  2 errors
+
+* Try:
+> Check your code and dependencies to fix the compilation error(s)
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.3.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 3s
+11 actionable tasks: 1 executed, 10 up-to-date

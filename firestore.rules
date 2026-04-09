@@ -1,0 +1,52 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Users collection — only the owner can read/write their own profile
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // Emergency contacts subcollection
+      match /emergencyContacts/{contactId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+      
+      // Settings subcollection
+      match /settings/{settingId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+    
+    // Alerts collection — users can create and read their own alerts
+    // Network contacts can read alerts they're notified about
+    match /alerts/{alertId} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow update: if request.auth != null && (
+        resource.data.userId == request.auth.uid || // Alert owner
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['responses']) // Contact responding
+      );
+      allow delete: if false; // Never delete alerts
+    }
+    
+    // Danger Zones collection — readable by all authenticated users
+    // Only writable by Cloud Functions (admin SDK bypasses rules)
+    match /danger_zones/{geohash} {
+      allow read: if request.auth != null;
+      allow write: if false; // Only Cloud Functions can write
+    }
+    
+    // Message Templates — cached by Cloud Functions
+    match /message_templates/{geohash} {
+      allow read: if request.auth != null;
+      allow write: if false; // Only Cloud Functions can write
+    }
+    
+    // Route Cache — cached route safety scores
+    match /route_cache/{routeHash} {
+      allow read: if request.auth != null;
+      allow write: if false; // Only Cloud Functions can write
+    }
+  }
+}

@@ -256,6 +256,94 @@
 
             </LinearLayout>
 
+            <!-- Statistics Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="24dp"
+                android:orientation="horizontal"
+                android:background="@drawable/bg_glass_panel"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total Notified"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/montserrat"
+                        android:textColor="@color/slate_grey" />
+
+                    <TextView
+                        android:id="@+id/total_notified"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:textColor="@color/text_on_dark"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Responded"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/montserrat"
+                        android:textColor="@color/slate_grey" />
+
+                    <TextView
+                        android:id="@+id/responded_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:textColor="@color/electric_indigo_light"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="end">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Failed"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/montserrat"
+                        android:textColor="@color/slate_grey" />
+
+                    <TextView
+                        android:id="@+id/failed_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:textColor="@color/sos_red"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+            </LinearLayout>
+
             <!-- Contact Responses Section Header -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -302,6 +390,104 @@
                 android:fontFamily="@font/montserrat"
                 android:textColor="@color/slate_grey"
                 android:visibility="gone" />
+
+            <!-- Device Info Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:orientation="vertical"
+                android:background="@drawable/bg_glass_panel"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Device Info"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:textColor="@color/text_on_dark"
+                    android:layout_marginBottom="12dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Battery"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/montserrat"
+                        android:textColor="@color/slate_grey" />
+
+                    <TextView
+                        android:id="@+id/device_battery"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="---"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:textColor="@color/text_on_dark" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Network"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/montserrat"
+                        android:textColor="@color/slate_grey" />
+
+                    <TextView
+                        android:id="@+id/device_network"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="---"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:textColor="@color/text_on_dark" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Signal"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/montserrat"
+                        android:textColor="@color/slate_grey" />
+
+                    <TextView
+                        android:id="@+id/device_signal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="---"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:textColor="@color/text_on_dark" />
+                </LinearLayout>
+            </LinearLayout>
 
             <!-- Spacer -->
             <View

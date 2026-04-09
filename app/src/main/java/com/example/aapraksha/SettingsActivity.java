@@ -31,6 +31,7 @@ import java.util.Locale;
 
 import android.os.PowerManager;
 import android.content.Context;
+import com.example.aapraksha.ai.fakecall.FakeCallService;
 
 public class SettingsActivity extends BaseActivity {
 
@@ -50,6 +51,15 @@ public class SettingsActivity extends BaseActivity {
     private Switch switchVolumeSos;
     private TextView tvVolumeSosStatus;
     private View rowVolumeSos;
+
+    // AI Safety
+    private Switch switchAudioThreat;
+    private TextView tvAudioThreatStatus;
+    private View rowAudioThreat;
+    private Switch switchFakeCall;
+    private TextView tvFakeCallStatus;
+    private View rowFakeCall;
+    private android.content.SharedPreferences prefs;
 
     // Permission switches
     private Switch switchPermLocation, switchPermSms, switchPermCamera,
@@ -92,6 +102,14 @@ public class SettingsActivity extends BaseActivity {
 
         // Bind safety switch
         switchVolumeSos = findViewById(R.id.switch_volume_sos);
+        
+        switchAudioThreat = findViewById(R.id.switch_audio_threat);
+        tvAudioThreatStatus = findViewById(R.id.tv_audio_threat_status);
+        rowAudioThreat = findViewById(R.id.row_audio_threat);
+        switchFakeCall = findViewById(R.id.switch_fake_call);
+        tvFakeCallStatus = findViewById(R.id.tv_fake_call_status);
+        rowFakeCall = findViewById(R.id.row_fake_call);
+        prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
 
         // Bind permission switches
         switchPermLocation = findViewById(R.id.switch_perm_location);
@@ -160,6 +178,57 @@ public class SettingsActivity extends BaseActivity {
         switchVolumeSos.setClickable(false);
         switchVolumeSos.setFocusable(false);
 
+        // Audio Threat Toggle
+        boolean isAudioThreatEnabled = prefs.getBoolean("audio_threat_enabled", false);
+        switchAudioThreat.setChecked(isAudioThreatEnabled);
+        updateAudioThreatStatus(isAudioThreatEnabled);
+
+        switchAudioThreat.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            prefs.edit().putBoolean("audio_threat_enabled", isChecked).apply();
+            updateAudioThreatStatus(isChecked);
+            if (isChecked) {
+                // If the user manually turns it on, we start it right away (or let a scheduler handle it if inside time window).
+                // Actually, the requirement was "Only active 9 PM - 6 AM by default" but user can override it. 
+                // We'll just start it now if toggled on, or stop if off.
+                Intent serviceIntent = new Intent(this, com.example.aapraksha.ai.audio.AudioThreatService.class);
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    startForegroundService(serviceIntent);
+                } else {
+                    startService(serviceIntent);
+                }
+            } else {
+                Intent serviceIntent = new Intent(this, com.example.aapraksha.ai.audio.AudioThreatService.class);
+                stopService(serviceIntent);
+            }
+        });
+
+        rowAudioThreat.setOnClickListener(v -> switchAudioThreat.setChecked(!switchAudioThreat.isChecked()));
+
+        boolean fakeCallEnabled = prefs.getBoolean("fake_call_shake_enabled", true);
+        switchFakeCall.setChecked(fakeCallEnabled);
+        updateFakeCallStatus(fakeCallEnabled);
+        switchFakeCall.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            prefs.edit().putBoolean("fake_call_shake_enabled", isChecked).apply();
+            updateFakeCallStatus(isChecked);
+            Intent serviceIntent = new Intent(this, FakeCallService.class);
+            if (isChecked) {
+                try {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        startForegroundService(serviceIntent);
+                    } else {
+                        startService(serviceIntent);
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Failed to start FakeCallService", e);
+                    Toast.makeText(this, "Couldn't start fake call protection.", Toast.LENGTH_SHORT).show();
+                    switchFakeCall.setChecked(false);
+                }
+            } else {
+                stopService(serviceIntent);
+            }
+        });
+        rowFakeCall.setOnClickListener(v -> switchFakeCall.setChecked(!switchFakeCall.isChecked()));
+
         // Emergency Contacts
         findViewById(R.id.card_emergency).setOnClickListener(v ->
                 startActivity(new Intent(SettingsActivity.this, EmergencyContactsActivity.class)));
@@ -227,6 +296,26 @@ public class SettingsActivity extends BaseActivity {
                 tvVolumeSosStatus.setText(tvVolumeSosStatus.getText() + "\n(Warning: Battery optimization may affect reliability)");
                 tvVolumeSosStatus.setTextColor(0xFFFFC107); // amber
             }
+        }
+    }
+
+    private void updateAudioThreatStatus(boolean isEnabled) {
+        if (isEnabled) {
+            tvAudioThreatStatus.setText("Active — Monitoring for distress sounds");
+            tvAudioThreatStatus.setTextColor(0xFF4CAF50); // green
+        } else {
+            tvAudioThreatStatus.setText("Disabled — Will Auto-Start 9 PM to 6 AM");
+            tvAudioThreatStatus.setTextColor(0xFFFF7043); // orange
+        }
+    }
+
+    private void updateFakeCallStatus(boolean isEnabled) {
+        if (isEnabled) {
+            tvFakeCallStatus.setText("Active — shake phone 3 times for fake call");
+            tvFakeCallStatus.setTextColor(0xFF4CAF50);
+        } else {
+            tvFakeCallStatus.setText("Disabled — shake trigger is off");
+            tvFakeCallStatus.setTextColor(0xFFFF7043);
         }
     }
 
@@ -457,7 +546,7 @@ public class SettingsActivity extends BaseActivity {
             finish();
         });
         if (navSafe != null) navSafe.setOnClickListener(v ->
-                startActivity(new Intent(this, AlertsActivity.class)));
+                startActivity(new Intent(this, NetworkAlertsActivity.class)));
         if (navHistory != null) navHistory.setOnClickListener(v ->
                 startActivity(new Intent(this, HistoryActivity.class)));
     }

@@ -22,6 +22,7 @@ public class SOSAlert implements Serializable {
     // Status tracking
     private String status; // TRIGGERED, ACTIVE, CANCELLED, RESOLVED, EXPIRED
     private String alertType; // SOS, CHECK_IN, MANUAL
+    private String legacyAlertType; // legacy field "alertType"
     private SOSData sosData;
     
     // Direct Firestore flat timestamp fields
@@ -34,6 +35,7 @@ public class SOSAlert implements Serializable {
     
     // Alert message
     private String alertMessage;
+    private String incidentReport;
     private AlertDetails alertDetails;
     
     // Firestore flat field for device info (stored as Map)
@@ -63,6 +65,14 @@ public class SOSAlert implements Serializable {
     
     // SOS status metadata (trigger count, visibility, etc.)
     private Map<String, Object> sosStatus;
+
+    // ===== Danger Intelligence Layer Fields =====
+    // These fields enable zone-based danger scoring by the Cloud Function.
+    // Existing Firestore documents may not have these fields — always null-check.
+    private String geohash;           // GeoFire geohash (precision 6 = ~1.2km zone)
+    private String timeOfDay;         // "MORNING", "AFTERNOON", "EVENING", "NIGHT"
+    private boolean resolved;         // true when SOS is resolved (not just cancelled)
+    private int durationSeconds;      // total SOS duration for severity scoring
 
     public SOSAlert() {
         this.sosData = new SOSData();
@@ -100,11 +110,21 @@ public class SOSAlert implements Serializable {
 
     @PropertyName("type")
     public String getAlertType() {
-        return alertType;
+        return alertType != null ? alertType : legacyAlertType;
     }
     
     @PropertyName("type")
     public void setAlertType(String alertType) { this.alertType = alertType; }
+
+    @PropertyName("alertType")
+    public String getLegacyAlertType() {
+        return legacyAlertType;
+    }
+
+    @PropertyName("alertType")
+    public void setLegacyAlertType(String legacyAlertType) {
+        this.legacyAlertType = legacyAlertType;
+    }
     
 
     public SOSData getSosData() { return sosData; }
@@ -115,6 +135,9 @@ public class SOSAlert implements Serializable {
 
     public String getAlertMessage() { return alertMessage; }
     public void setAlertMessage(String alertMessage) { this.alertMessage = alertMessage; }
+
+    public String getIncidentReport() { return incidentReport; }
+    public void setIncidentReport(String incidentReport) { this.incidentReport = incidentReport; }
 
     public AlertDetails getAlertDetails() { return alertDetails; }
     public void setAlertDetails(AlertDetails alertDetails) { this.alertDetails = alertDetails; }
@@ -250,6 +273,20 @@ public class SOSAlert implements Serializable {
     public void setSosStatus(Map<String, Object> sosStatus) {
         this.sosStatus = sosStatus;
     }
+
+    // ===== Danger Intelligence Getters & Setters =====
+
+    public String getGeohash() { return geohash; }
+    public void setGeohash(String geohash) { this.geohash = geohash; }
+
+    public String getTimeOfDay() { return timeOfDay; }
+    public void setTimeOfDay(String timeOfDay) { this.timeOfDay = timeOfDay; }
+
+    public boolean isResolved() { return resolved; }
+    public void setResolved(boolean resolved) { this.resolved = resolved; }
+
+    public int getDurationSeconds() { return durationSeconds; }
+    public void setDurationSeconds(int durationSeconds) { this.durationSeconds = durationSeconds; }
 
     /**
      * Get the total number of SOS alerts triggered for this alert session or user

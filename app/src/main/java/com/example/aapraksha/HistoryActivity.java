@@ -229,7 +229,7 @@ public class HistoryActivity extends BaseActivity implements AlertService.AlertS
             if ("ALL".equals(currentFilter)) {
                 filteredAlerts.add(alert);
             } else if ("SOS".equals(currentFilter) && 
-                       "SOS".equals(alert.getAlertType())) {
+                       ("SOS".equals(alert.getAlertType()) || "EMERGENCY_SOS".equals(alert.getAlertType()))) {
                 filteredAlerts.add(alert);
             } else if ("CHECK_IN".equals(currentFilter) && 
                        "CHECK_IN".equals(alert.getAlertType())) {

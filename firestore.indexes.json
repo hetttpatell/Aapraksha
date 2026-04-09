@@ -1,0 +1,20 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "alerts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "geohash", "order": "ASCENDING" },
+        { "fieldPath": "sosData.triggeredAt", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "danger_zones",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "rank", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

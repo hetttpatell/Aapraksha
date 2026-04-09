@@ -1,0 +1,31 @@
+[org.tensorflow:tensorflow-lite:2.14.0] C:\Users\Jitu\.gradle\caches\9.3.1\transforms\8d4dad7b52ab12a80d8b5d16909bc96c\workspace\transformed\tensorflow-lite-2.14.0\AndroidManifest.xml Error:
+	Namespace 'org.tensorflow.lite' is used in multiple modules and/or libraries: org.tensorflow:tensorflow-lite:2.14.0, org.tensorflow:tensorflow-lite-api:2.14.0. Please ensure that all modules and libraries have a unique namespace. For more information, See https://developer.android.com/studio/build/configure-app-module#set-namespace
+[org.tensorflow:tensorflow-lite-support:0.4.4] C:\Users\Jitu\.gradle\caches\9.3.1\transforms\70f4a724299d3014b1c196f2e29aa3af\workspace\transformed\tensorflow-lite-support-0.4.4\AndroidManifest.xml Error:
+	Namespace 'org.tensorflow.lite.support' is used in multiple modules and/or libraries: org.tensorflow:tensorflow-lite-support:0.4.4, org.tensorflow:tensorflow-lite-support-api:0.4.4. Please ensure that all modules and libraries have a unique namespace. For more information, See https://developer.android.com/studio/build/configure-app-module#set-namespace
+C:\Users\Jitu\AndroidStudioProjects\Aapraksha\app\src\main\AndroidManifest.xml Error:
+	Validation failed, exiting
+
+See https://developer.android.com/r/studio-ui/build/manifest-merger for more information about the manifest merger.
+
+
+[Incubating] Problems report is available at: file:///C:/Users/Jitu/AndroidStudioProjects/Aapraksha/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:processDebugMainManifest'.
+> Manifest merger failed with multiple errors, see logs
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.3.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 1s

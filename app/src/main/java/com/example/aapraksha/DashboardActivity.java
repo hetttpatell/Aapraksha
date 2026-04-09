@@ -21,6 +21,10 @@ import android.content.SharedPreferences;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
+import com.example.aapraksha.ai.fakecall.FakeCallActivity;
+import com.example.aapraksha.ai.fakecall.FakeCallService;
+import com.example.aapraksha.ai.gemini.ChatActivity;
+import com.example.aapraksha.ai.routes.SafeRouteActivity;
 
 public class DashboardActivity extends BaseActivity {
     private FusedLocationProviderClient fusedLocationProviderClient;
@@ -38,20 +42,13 @@ public class DashboardActivity extends BaseActivity {
     private View sosPulse1;
     private View sosPulse2;
     private View sosPulse3;
+    private View cardAiAssistant;
+    private View cardGps;
+    private View cardFakeCall;
 
     private boolean hasRequestedRuntimePermissions = false;
     private boolean isRequestingPermissions = false;
     private SharedPreferences prefs;
-
-    private final String[] REQUIRED_PERMISSIONS = {
-            android.Manifest.permission.ACCESS_FINE_LOCATION,
-            android.Manifest.permission.ACCESS_COARSE_LOCATION,
-            android.Manifest.permission.SEND_SMS,
-            android.Manifest.permission.READ_CONTACTS,
-            android.Manifest.permission.CALL_PHONE,
-            android.Manifest.permission.CAMERA,
-            android.Manifest.permission.RECORD_AUDIO
-    };
 
     private final androidx.activity.result.ActivityResultLauncher<String[]> requestPermissionsLauncher =
             registerForActivityResult(new androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions(), permissions -> {
@@ -87,6 +84,9 @@ public class DashboardActivity extends BaseActivity {
         sosPulse1 = findViewById(R.id.sos_pulse_1);
         sosPulse2 = findViewById(R.id.sos_pulse_2);
         sosPulse3 = findViewById(R.id.sos_pulse_3);
+        cardAiAssistant = findViewById(R.id.card_ai_assistant);
+        cardGps = findViewById(R.id.card_gps);
+        cardFakeCall = findViewById(R.id.card_fake_call);
         
         // Tutorial View Init
         overlayTutorial = findViewById(R.id.overlay_tutorial);
@@ -97,7 +97,25 @@ public class DashboardActivity extends BaseActivity {
         userRepository = new UserRepository();
         
         setupBottomNav();
+        setupQuickActions();
+        startFakeCallProtectionServiceIfEnabled();
         loadUserProfile();
+    }
+
+    private void startFakeCallProtectionServiceIfEnabled() {
+        boolean enabled = prefs.getBoolean("fake_call_shake_enabled", true);
+        if (!enabled) return;
+
+        Intent serviceIntent = new Intent(this, FakeCallService.class);
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                startForegroundService(serviceIntent);
+            } else {
+                startService(serviceIntent);
+            }
+        } catch (Exception e) {
+            Log.e("DashboardActivity", "Failed to start FakeCallService", e);
+        }
     }
 
     @Override
@@ -111,7 +129,7 @@ public class DashboardActivity extends BaseActivity {
             if (!isRequestingPermissions) {
                 isRequestingPermissions = true;
                 hasRequestedRuntimePermissions = true;
-                requestPermissionsLauncher.launch(REQUIRED_PERMISSIONS);
+                requestPermissionsLauncher.launch(getRequiredPermissions());
             }
         } else if (!isIgnoringBatteryOptimizations() && !prefs.getBoolean("hasShownBatteryDialog", false)) {
             prefs.edit().putBoolean("hasShownBatteryDialog", true).apply();
@@ -126,13 +144,38 @@ public class DashboardActivity extends BaseActivity {
 
     private boolean hasAllRuntimePermissions() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            for (String permission : REQUIRED_PERMISSIONS) {
+            for (String permission : getRequiredPermissions()) {
                 if (androidx.core.content.ContextCompat.checkSelfPermission(this, permission) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
                     return false;
                 }
             }
         }
         return true;
+    }
+
+    private String[] getRequiredPermissions() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            return new String[]{
+                    android.Manifest.permission.ACCESS_FINE_LOCATION,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                    android.Manifest.permission.SEND_SMS,
+                    android.Manifest.permission.READ_CONTACTS,
+                    android.Manifest.permission.CALL_PHONE,
+                    android.Manifest.permission.CAMERA,
+                    android.Manifest.permission.RECORD_AUDIO,
+                    android.Manifest.permission.POST_NOTIFICATIONS
+            };
+        }
+
+        return new String[]{
+                android.Manifest.permission.ACCESS_FINE_LOCATION,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                android.Manifest.permission.SEND_SMS,
+                android.Manifest.permission.READ_CONTACTS,
+                android.Manifest.permission.CALL_PHONE,
+                android.Manifest.permission.CAMERA,
+                android.Manifest.permission.RECORD_AUDIO
+        };
     }
 
     private boolean isIgnoringBatteryOptimizations() {
@@ -261,6 +304,13 @@ public class DashboardActivity extends BaseActivity {
     }
 
     private void loadUserProfile() {
+        if (auth.getCurrentUser() == null) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+            return;
+        }
         String userId = auth.getCurrentUser().getUid();
         userRepository.getUserProfile(userId, new UserRepository.OnUserFetchListener() {
             @Override
@@ -423,6 +473,28 @@ public class DashboardActivity extends BaseActivity {
         if (navSettings != null) {
             navSettings.setOnClickListener(v -> {
                 Intent intent = new Intent(DashboardActivity.this, SettingsActivity.class);
+                startActivity(intent);
+            });
+        }
+    }
+
+    private void setupQuickActions() {
+        if (cardGps != null) {
+            cardGps.setOnClickListener(v -> {
+                Intent intent = new Intent(DashboardActivity.this, SafeRouteActivity.class);
+                startActivity(intent);
+            });
+        }
+        if (cardFakeCall != null) {
+            cardFakeCall.setOnClickListener(v -> {
+                Intent intent = new Intent(DashboardActivity.this, FakeCallActivity.class);
+                intent.putExtra(FakeCallActivity.EXTRA_CALLER_NAME, "Priya");
+                startActivity(intent);
+            });
+        }
+        if (cardAiAssistant != null) {
+            cardAiAssistant.setOnClickListener(v -> {
+                Intent intent = new Intent(DashboardActivity.this, ChatActivity.class);
                 startActivity(intent);
             });
         }

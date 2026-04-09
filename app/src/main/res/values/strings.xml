@@ -81,4 +81,11 @@
         <string name="default_web_client_id">769868135806-81uibpb7ctklttm4ab9eqlb4ulrofg0j.apps.googleusercontent.com</string>
         <string name="another_string">Some other value</string>
         <string name="yet_another_string">Another value</string>
+        
+        <!-- Chat/Chatbot (Phase 6) -->
+        <string-array name="language_options">
+            <item>English</item>
+            <item>हिंदी (Hindi)</item>
+            <item>ગુજરાતી (Gujarati)</item>
+        </string-array>
 </resources>

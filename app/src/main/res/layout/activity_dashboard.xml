@@ -548,7 +548,129 @@
 
         </com.google.android.material.card.MaterialCardView>
 
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_ai_assistant"
+            android:layout_width="0dp"
+            android:layout_height="105dp"
+            android:layout_weight="1"
+            android:layout_marginStart="12dp"
+            app:cardBackgroundColor="#1A2942"
+            app:cardCornerRadius="14dp"
+            app:strokeColor="@color/card_stroke_dark"
+            app:strokeWidth="1dp"
+            app:cardElevation="0dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_shield"
+                    android:padding="4dp"
+                    android:background="@drawable/feature_icon_bg"
+                    app:tint="@color/electric_indigo_light" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="AI Safety"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:textColor="@color/text_on_dark"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Chat assistant"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:textColor="@color/slate_grey"
+                    android:textSize="10sp" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
     </LinearLayout>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_fake_call"
+        android:layout_width="0dp"
+        android:layout_height="82dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="20dp"
+        app:cardBackgroundColor="#1A2942"
+        app:cardCornerRadius="14dp"
+        app:strokeColor="@color/card_stroke_dark"
+        app:strokeWidth="1dp"
+        app:cardElevation="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        app:layout_constraintTop_toBottomOf="@id/feature_row"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="16dp">
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_call"
+                android:padding="6dp"
+                android:background="@drawable/feature_icon_bg"
+                app:tint="@color/electric_indigo_light" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fake Distraction Call"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:textColor="@color/text_on_dark"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Tap to trigger instantly"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:textColor="@color/slate_grey"
+                    android:textSize="11sp" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_arrow_forward"
+                app:tint="@color/slate_grey" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

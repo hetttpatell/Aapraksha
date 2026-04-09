@@ -20,6 +20,12 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SHORT_SERVICE" />
 
+    <!-- AI Feature Permissions -->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.HIGH_SAMPLING_RATE_SENSORS" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -107,7 +113,6 @@
             android:name=".HistoryActivity"
             android:exported="false" />
 
-
         <!-- Safe Screen Activity -->
         <activity
             android:name=".SafeScreenActivity"
@@ -122,7 +127,6 @@
         <activity
             android:name=".NotificationSettingsActivity"
             android:exported="false" />
-
 
         <!-- Location History Activity -->
         <activity
@@ -143,6 +147,36 @@
         <activity
             android:name=".AlertDetailPageActivity"
             android:exported="false" />
+
+        <!-- ===== AI Feature Activities ===== -->
+
+        <!-- Check-In Activity (Anomaly detection response) -->
+        <activity
+            android:name=".checkin.CheckInActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.Aapraksha" />
+
+        <!-- AI Safety Chatbot Activity (Phase 6) -->
+        <activity
+            android:name=".ai.gemini.ChatActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Safe Route Activity -->
+        <activity
+            android:name=".ai.routes.SafeRouteActivity"
+            android:exported="false" />
+
+        <!-- Fake Call Activity -->
+        <activity
+            android:name=".ai.fakecall.FakeCallActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:excludeFromRecents="true"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+
+        <!-- ===== Existing Services ===== -->
 
         <!-- Location Tracking Service -->
         <service
@@ -174,6 +208,46 @@
             android:exported="false"
             android:foregroundServiceType="shortService"
             android:stopWithTask="false" />
+
+        <!-- ===== AI Feature Services ===== -->
+
+        <!-- Audio Threat Detection Service (Phase 2) -->
+        <service
+            android:name=".ai.audio.AudioThreatService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="microphone" />
+
+        <!-- Fall & Struggle Detection Service (Phase 4) -->
+        <service
+            android:name=".ai.sensor.FallDetectionService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="shortService" />
+
+        <!-- Anomaly Detection Service (Phase 3) -->
+        <service
+            android:name=".ai.anomaly.AnomalyDetectionService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="location" />
+
+        <!-- Fake Call Service — shake gesture listener (Phase 7) -->
+        <service
+            android:name=".ai.fakecall.FakeCallService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="shortService" />
+
+        <!-- Boot Receiver — restart AI services after reboot -->
+        <receiver
+            android:name=".ai.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
     </application>
 

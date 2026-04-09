@@ -20,6 +20,15 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        // Read Gemini API key from local.properties (keep keys out of source control)
+        def localProperties = new Properties()
+        def localPropertiesFile = rootProject.file('local.properties')
+        if (localPropertiesFile.exists()) {
+            localProperties.load(new FileInputStream(localPropertiesFile))
+        }
+        buildConfigField "String", "GEMINI_API_KEY", "\"${localProperties.getProperty('GEMINI_API_KEY', '')}\""
+        buildConfigField "String", "GEMINI_MODEL_NAME", "\"${localProperties.getProperty('GEMINI_MODEL_NAME', 'gemini-2.0-flash')}\""
     }
 
     buildTypes {
@@ -32,6 +41,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+    buildFeatures {
+        buildConfig true
+    }
 }
 
 dependencies {
@@ -43,6 +55,7 @@ dependencies {
     // Google Play Services
     implementation libs.gms.location
     implementation libs.gms.auth
+    implementation libs.gms.maps
     
     // Glide
     implementation libs.glide
@@ -57,6 +70,31 @@ dependencies {
     implementation libs.firebase.firestore
     implementation libs.firebase.firestore.core
     implementation libs.firebase.storage
+    implementation libs.firebase.functions
+    implementation libs.firebase.messaging
+    
+    // Room Database (local routine storage — Phase 3)
+    implementation libs.room.runtime
+    annotationProcessor libs.room.compiler
+    
+    // WorkManager (scheduled check-ins — Phase 9)
+    implementation 'androidx.work:work-runtime:2.9.0'
+    
+    // TensorFlow Lite (Audio + Fall detection — Phase 2 & 4)
+    // Switched to Play Services TFLite to avoid AGP 9 namespace collisons!
+    implementation libs.play.services.tflite.java
+    implementation libs.play.services.tflite.support
+    implementation ('org.tensorflow:tensorflow-lite-task-audio:0.4.4') {
+        exclude group: 'org.tensorflow', module: 'tensorflow-lite-api'
+        exclude group: 'org.tensorflow', module: 'tensorflow-lite-support-api'
+        exclude group: 'org.tensorflow', module: 'tensorflow-lite'
+    }
+    
+    // Google Maps Utils (Heatmap overlay — Phase 1)
+    implementation libs.maps.utils
+    
+    // Gemini AI (Direct SDK for chatbot only — Phase 6)
+    implementation libs.generativeai
     
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit

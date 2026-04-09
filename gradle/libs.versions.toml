@@ -18,7 +18,14 @@ firebaseFirestore = "25.0.0"
 firebaseStorage = "21.0.0"
 googlePlayServicesLocation = "21.1.0"
 googlePlayServicesAuth = "20.7.0"
+googlePlayServicesMaps = "18.2.0"
 glide = "4.16.0"
+# AI Feature Dependencies
+roomRuntime = "2.6.1"
+tensorflowLite = "2.14.0"
+tensorflowLiteSupport = "0.4.4"
+mapsUtils = "3.8.2"
+generativeai = "0.7.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -36,10 +43,22 @@ firebase-database = { group = "com.google.firebase", name = "firebase-database-k
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore-ktx" }
 firebase-firestore-core = { group = "com.google.firebase", name = "firebase-firestore" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage" }
+firebase-functions = { group = "com.google.firebase", name = "firebase-functions" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
 gms-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "googlePlayServicesLocation" }
 gms-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "googlePlayServicesAuth" }
+gms-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "googlePlayServicesMaps" }
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide" }
+# AI Feature Libraries
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomRuntime" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomRuntime" }
+play-services-tflite-java = { group = "com.google.android.gms", name = "play-services-tflite-java", version = "16.1.0" }
+play-services-tflite-support = { group = "com.google.android.gms", name = "play-services-tflite-support", version = "16.1.0" }
+tensorflow-lite = { group = "org.tensorflow", name = "tensorflow-lite", version.ref = "tensorflowLite" }
+tensorflow-lite-support = { group = "org.tensorflow", name = "tensorflow-lite-support", version.ref = "tensorflowLiteSupport" }
+maps-utils = { group = "com.google.maps.android", name = "android-maps-utils", version.ref = "mapsUtils" }
+generativeai = { group = "com.google.ai.client.generativeai", name = "generativeai", version.ref = "generativeai" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -1,0 +1,15 @@
+{
+  "name": "firebase-mcp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Firebase MCP server scaffold using service account JSON file path",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "check:key": "node server.js --check-only"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "latest",
+    "firebase-admin": "latest"
+  }
+}

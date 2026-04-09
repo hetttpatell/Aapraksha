@@ -65,6 +65,10 @@ public class SOSAlertRepository {
      */
     public void triggerSOS(double latitude, double longitude, double accuracy,
                           OnAlertCreatedListener onSuccess, OnAlertStatusChangedListener onFailure) {
+        if (auth.getCurrentUser() == null) {
+            onFailure.onError("User not authenticated");
+            return;
+        }
         String userId = auth.getCurrentUser().getUid();
 
         try {
@@ -136,7 +140,7 @@ public class SOSAlertRepository {
 
             // Device information
             Map<String, Object> deviceData = new HashMap<>();
-            deviceData.put("deviceId", android.provider.Settings.Secure.getString(null, android.provider.Settings.Secure.ANDROID_ID));
+            deviceData.put("deviceId", android.os.Build.MODEL);
             deviceData.put("deviceName", android.os.Build.DEVICE);
             deviceData.put("osVersion", android.os.Build.VERSION.SDK_INT);
             deviceData.put("batteryLevel", 85); // TODO: Get actual battery level
@@ -257,6 +261,10 @@ public class SOSAlertRepository {
      * Get active SOS alert for current user
      */
     public void getActiveSOS(OnAlertFetchListener listener) {
+        if (auth.getCurrentUser() == null) {
+            listener.onError("User not authenticated");
+            return;
+        }
         String userId = auth.getCurrentUser().getUid();
         try {
             db.collection("alerts")
@@ -322,7 +330,6 @@ public class SOSAlertRepository {
      * Returns alerts with ACTIVE or TRIGGERED status
      */
     public void fetchLiveAlerts(OnAlertsListFetchListener listener) {
-        String currentUserId = auth.getCurrentUser().getUid();
         try {
             db.collection("alerts")
                     .whereIn("status", java.util.Arrays.asList("ACTIVE", "TRIGGERED"))
@@ -334,9 +341,7 @@ public class SOSAlertRepository {
                             SOSAlert alert = doc.toObject(SOSAlert.class);
                             if (alert != null) {
                                 if (alert.getAlertId() == null) alert.setAlertId(doc.getId());
-                                if (!currentUserId.equals(alert.getUserId())) {
-                                    alerts.add(alert);
-                                }
+                                alerts.add(alert);
                             }
                         }
                         
@@ -492,7 +497,6 @@ public class SOSAlertRepository {
      * Returns ListenerRegistration to manage listener lifecycle
      */
     public ListenerRegistration listenToLiveAlerts(OnRealtimeAlertsListener listener) {
-        String currentUserId = auth.getCurrentUser().getUid();
         try {
             return db.collection("alerts")
                     .whereIn("status", java.util.Arrays.asList("ACTIVE", "TRIGGERED"))
@@ -510,9 +514,7 @@ public class SOSAlertRepository {
                                 SOSAlert alert = doc.toObject(SOSAlert.class);
                                 if (alert != null) {
                                     if (alert.getAlertId() == null) alert.setAlertId(doc.getId());
-                                    if (!currentUserId.equals(alert.getUserId())) {
-                                        alerts.add(alert);
-                                    }
+                                    alerts.add(alert);
                                 }
                             }
                             
